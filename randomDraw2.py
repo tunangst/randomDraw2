@@ -13,7 +13,7 @@ class randomDraw2():
         self.height = height
     def set_image_destination(self,location):
         self.image_file_directory = location
-    def start():
+    def start(self):
         print('Starting to draw')
 
 test = randomDraw2()
