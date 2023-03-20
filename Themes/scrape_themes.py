@@ -30,12 +30,13 @@ splash_screen_close_btn = driver.find_element_by_xpath(
 all_sources_btn = driver.find_element_by_xpath(
     "//*[contains(text(), 'All Sources')]")
 all_sources_btn.click()
+time.sleep(1)
 # find color themes tab and click on it
 color_themes_btn = driver.find_element_by_xpath(
     "//*[contains(text(), 'Color Themes')]")
 color_themes_btn.click()
-# find all time tab and click on it
 time.sleep(1)
+# find all time tab and click on it
 all_time_btn = driver.find_element_by_xpath(
     "//*[contains(text(), 'All Time')]")
 all_time_btn.click()
@@ -47,8 +48,8 @@ current_page_number = 0
 loop_increment = 10000
 active_loop = True
 while (active_loop or loop_increment <= 0):
-
-  # find all color cards on page
+    time.sleep(2)
+    # find all color cards on page
     color_theme_cards = driver.find_elements_by_xpath(
         "//*[contains(@class, 'Theme__theme')]")
     # print(color_theme_cards)
@@ -66,9 +67,14 @@ while (active_loop or loop_increment <= 0):
             style_length = len(style)
             rgb = style.find(' ') + 1
             rgb_string = style[rgb: style_length - 1]
-            color_swatch.append(rgb_string)
+
+            # convert to ascii to remove u'rgb(1,1,1)'
+            ascii_rgb_string = rgb_string.encode('ascii')
+
+            color_swatch.append(ascii_rgb_string)
 
         color_theme_array.append(color_swatch)
+        print(len(color_theme_array))
 
     # find next button
     time.sleep(1)
@@ -85,6 +91,7 @@ while (active_loop or loop_increment <= 0):
         active_loop = False
     print(page_number)
 
+    color_theme_cards = ''
     current_page_number += 1
     loop_increment -= 1
 
