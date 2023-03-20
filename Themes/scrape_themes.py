@@ -95,5 +95,5 @@ while (active_loop or loop_increment <= 0):
     current_page_number += 1
     loop_increment -= 1
 
-with open("themes.txt", mode="wt") as f:
-    f.write(str(color_theme_array))
+with open("themes.js", mode="wt") as f:
+    f.write('let theme_list = ' + str(color_theme_array))
