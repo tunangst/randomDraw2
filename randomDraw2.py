@@ -16,6 +16,11 @@ class randomDraw2():
     def start(self):
         print('Starting to draw')
 
+
+
+
+
+
 test = randomDraw2()
 print(test.image_count)
 test.set_image_count(5)
