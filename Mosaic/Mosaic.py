@@ -24,7 +24,7 @@ class Mosaic_style():
         self.random_color = False
         self.control_size = cwidth if cwidth > cheight else cheight
         # will default to 80 on default sizes
-        self.shape_count = utility.find_closest_box_count(
+        self.shape_count = utility.get_closest_box_count(
             self.control_size, 100)
         # only currently for square
         self.shape_width = math.floor(self.control_size/self.shape_count)
@@ -74,27 +74,6 @@ class Mosaic_style():
         # keep the scene open
         self.app.exec()
 
-    def squares2(self):
-        self.canvas = self.label.pixmap()
-        painter = QtGui.QPainter(self.canvas)
-        pen = QtGui.QPen()
-        pen.setWidth(3)
-        pen.setColor(QtGui.QColor("#EB5160"))
-        painter.setPen(pen)
-
-        cur_x_coord = 0
-        cur_y_coord = 0
-        while cur_y_coord < self.canvas_height:
-            painter.drawRect(cur_x_coord, cur_y_coord,
-                             self.shape_width, self.shape_height)
-
-            cur_x_coord += self.shape_width
-            if cur_x_coord > self.canvas_width:
-                cur_x_coord = 0
-                cur_y_coord += self.canvas_height
-
-        painter.end()
-        self.label.setPixmap(self.canvas)
 
 # If we don't set this on creation, we can set it later with .setSceneRect
 
