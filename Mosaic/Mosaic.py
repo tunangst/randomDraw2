@@ -16,12 +16,23 @@ DEFAULT_DESIGN = 'square'
 # HEIGHT = WIDTH
 # print(DEFAULT_COUNT)
 
+# class variables
+# canvas_width
+# canvas_height
+# control_size
+# shape_count
+# shape_width
+# shape_height
+# app
+# scene
+
 
 class Mosaic_style():
-    def __init__(self, cwidth, cheight):
+    def __init__(self, cwidth, cheight, ):
         super().__init__()
         print('~~~~~ in Mosaic_style ~~~~~~~~')
-        self.random_color = False
+        self.canvas_width = cwidth
+        self.canvas_height = cheight
         self.control_size = cwidth if cwidth > cheight else cheight
         # will default to 80 on default sizes
         self.shape_count = utility.get_closest_box_count(
@@ -31,19 +42,9 @@ class Mosaic_style():
         # only currently for square
         self.shape_height = self.shape_width
 
-        print(self.shape_width, self.shape_height)
-        self.canvas_width = cwidth
-        self.canvas_height = cheight
-
         self.app = QApplication(sys.argv)
         self.scene = QGraphicsScene(0, 0,
                                     self.canvas_width, self.canvas_height)
-
-        # self.label = QtWidgets.QLabel()
-        # self.canvas = QtGui.QPixmap(self.canvas_width, self.canvas_height)
-        # self.canvas.fill(Qt.GlobalColor.black)
-        # self.label.setPixmap(self.canvas)
-        # self.setCentralWidget(self.label)
 
     def squares(self):
         cur_x_coord = 0
@@ -53,7 +54,7 @@ class Mosaic_style():
                 cur_x_coord, cur_y_coord, self.shape_width, self.shape_height)
             # rect.setPos(cur_x_coord, cur_y_coord)
             # fill
-            fill = QBrush(Qt.GlobalColor.blue)
+            fill = QBrush(QtGui.QColor(95, 0, 160))
             rect.setBrush(fill)
             # border
             border = QPen(Qt.GlobalColor.lightGray)

@@ -9,19 +9,22 @@ import sys
 DEFAULT_WIDTH = 2560
 DEFAULT_HEIGHT = 1440
 DEFAULT_DESIGN = 'square'
-FEATURE_CONTROL_SIZE = DEFAULT_WIDTH if DEFAULT_WIDTH > DEFAULT_HEIGHT else DEFAULT_HEIGHT
+# FEATURE_CONTROL_SIZE = DEFAULT_WIDTH if DEFAULT_WIDTH > DEFAULT_HEIGHT else DEFAULT_HEIGHT
 DEFAULT_COLOR_CHOICE = 1
 DEFAULT_RANDOM_COLOR_COUNT = utility.get_random(4)
 DEFAULT_RANDOM_COLOR_THEME = None
 DEFAULT_DESIGN_TYPE = 1
+
 # class variables
 # image_file_directory
 # image_count
 # color_choice (1=random, 2=theme)
 # random_color_count (1=dual, 2=tri, 3=quad, 4=cint)
 # random_color_theme (array )
+# design_type
 # canvas_width
 # canvas_height
+
 # ADD CHECKS ON USER INPUTS
 
 
@@ -45,9 +48,7 @@ class randomDraw2():
         print('in set_design_type', choice)
         match(choice):
             case 1 | 2 | 3 | 4 | 5:
-                print(self.design_type)
                 self.design_type = choice
-                print(self.design_type)
             case _:
                 print('out of scope')
                 return 'Out of scope'
