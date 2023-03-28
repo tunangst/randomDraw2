@@ -3,7 +3,7 @@ from contextlib import redirect_stdout
 
 def get_random_theme_color(color_array):
     random_index = get_random(len(color_array) - 1, 0)
-    print('in get_random_theme_color', random_index, ' index in ', color_array, ' choice is ', color_array[random_index])
+    # print('in get_random_theme_color', random_index, ' index in ', color_array, ' choice is ', color_array[random_index])
     return color_array[random_index]
 
 def get_random_rgb_color(bg = False):
@@ -12,31 +12,24 @@ def get_random_rgb_color(bg = False):
     if bg:
         b_or_w = get_random(2)
         if b_or_w == 1:
-            color_dictionary = {r:0,g:0,b:0}
-            return color_dictionary
+            return {'r':0,'g':0,'b':0}
         else:
-            color_dictionary = {r:255,g:255,b:255}
-            return color_dictionary
+            return {'r':255,'g':255,'b':255}
+
     r = get_random(255)
     g = get_random(255)
     b = get_random(255)
-    color_dictionary.r = r
-    color_dictionary.g = g
-    color_dictionary.b = b
+    color_dictionary['r']=r
+    color_dictionary['g']=g
+    color_dictionary['b']=b
+    # print('COLOR DICTIONARY ', color_dictionary)
     return color_dictionary
 
 def get_random_color_theme(color_choice, color_count):
     # color_choice (1=random, 2=theme)
     match(color_choice):
         case 1:
-            # import themes array
-            from .Themes.themes import themes_array
-            print('in get_random_color_theme choice =1')
-            # choose array from master
-            chosen_theme = themes_array[get_random(len(themes_array))]
-            return chosen_theme
-        case 2:
-            print('in get_random_color_theme choice =2')
+            # print('in get_random_color_theme choice =2')
             chosen_theme = []
             while_index = 0
             while while_index < color_count:
@@ -45,9 +38,16 @@ def get_random_color_theme(color_choice, color_count):
                 else:
                     chosen_color = get_random_rgb_color()
                 chosen_theme.append(chosen_color)
-                print(chosen_color, while_index, 'chosen color appended to array', chosen_theme)
+                # print(chosen_color, while_index, 'chosen color appended to array', chosen_theme)
                 while_index += 1
             return chosen_theme   
+        case 2:
+            # import themes array
+            from .Themes.themes import themes_array
+            # print('in get_random_color_theme choice =1')
+            # choose array from master
+            chosen_theme = themes_array[get_random(len(themes_array))]
+            return chosen_theme
         case _:
             print('Out of scope')
 
@@ -117,8 +117,4 @@ def test():
     with open("themes2.py", mode="wt") as f:
         with redirect_stdout(f):
             print(full_list)
-        # f.write(''.join(map(str,full_list)))
 
-# with open('out.txt', 'w') as f:
-#     with redirect_stdout(f):
-#         print('data')

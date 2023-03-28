@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import QGraphicsScene, QGraphicsView, QApplication, QGraphi
 import sys
 import math
 
-DEFAULT_COUNT = 2
+DEFAULT_COUNT = 100
 # class variables
 # canvas_width
 # canvas_height

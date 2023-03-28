@@ -40,6 +40,7 @@ class Square():
         self.start()
         
     def start(self):
+        print(self.color_theme)
         self.squares()
         
     def squares(self):
@@ -52,12 +53,12 @@ class Square():
             # rect.setPos(cur_x_coord, cur_y_coord)
             # fill
             selected_color = utility.get_random_theme_color(self.color_theme)
-            print('selected color ', selected_color)
+            # print('selected color ', selected_color)
             #NEED TO SET RGB IN DICTIONARY MODE
-            fill = QBrush(QtGui.QColor.setRgb())
+            fill = QBrush(QtGui.QColor(selected_color['r'],selected_color['g'],selected_color['b']))
             rect.setBrush(fill)
-            # border
-            border = QPen(Qt.GlobalColor.lightGray)
+            # border is the background color or first in array
+            border = QPen(QtGui.QColor(self.color_theme[0]['r'],self.color_theme[0]['g'],self.color_theme[0]['b']))
             border.setWidth(3)
             rect.setPen(border)
             # add to scene
