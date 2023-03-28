@@ -21,6 +21,7 @@ import math
 # shape_count
 # scene
 # app
+# fill
 
 
 class Square():
@@ -44,6 +45,7 @@ class Square():
     def squares(self):
         cur_x_coord = 0
         cur_y_coord = 0
+        selected_color = None
         while cur_y_coord < self.canvas_height:
             rect = QGraphicsRectItem(
                 cur_x_coord, cur_y_coord, self.shape_size, self.shape_size)
@@ -51,7 +53,8 @@ class Square():
             # fill
             selected_color = utility.get_random_theme_color(self.color_theme)
             print('selected color ', selected_color)
-            fill = QBrush(QtGui.QColor(selected_color))
+            #NEED TO SET RGB IN DICTIONARY MODE
+            fill = QBrush(QtGui.QColor.setRgb())
             rect.setBrush(fill)
             # border
             border = QPen(Qt.GlobalColor.lightGray)

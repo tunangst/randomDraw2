@@ -8,9 +8,7 @@ from PyQt6.QtWidgets import QGraphicsScene, QGraphicsView, QApplication, QGraphi
 import sys
 import math
 
-
-DEFAULT_DESIGN = 'square'
-
+DEFAULT_COUNT = 2
 # class variables
 # canvas_width
 # canvas_height
@@ -34,7 +32,7 @@ class Mosaic():
         self.color_theme = color_theme
         # will default to 80 on default sizes
         self.shape_count = utility.get_closest_box_count(
-            self.control_size, 100)
+            self.control_size, DEFAULT_COUNT)
         # only currently for square
         self.shape_width = math.floor(self.control_size/self.shape_count)
         # only currently for square

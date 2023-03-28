@@ -80,14 +80,15 @@ class randomDraw2():
         self.image_file_directory = location
 
     def start(self):
-        print('Starting to draw', self.design)
-        match(self.design):
-            case 2:
-                print('in square design')
-                Mosaic(
-                    self.canvas_width, self.canvas_height, self.design, self.color_theme)
-            case _:
-                return 'Out of scope'
+        utility.test()
+        # print('Starting to draw', self.design)
+        # match(self.design):
+        #     case 2:
+        #         print('in square design')
+        #         Mosaic(
+        #             self.canvas_width, self.canvas_height, self.design, self.color_theme)
+        #     case _:
+        #         return 'Out of scope'
 
 
 test = randomDraw2()
