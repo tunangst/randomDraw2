@@ -1,3 +1,4 @@
+from Form_dir.main_form import Main_Form
 from Mosaic_dir.Mosaic import Mosaic
 from main_utility_functions import utility
 from PyQt6 import QtCore, QtGui, QtWidgets, uic
@@ -8,7 +9,7 @@ import sys
 # default variables
 DEFAULT_WIDTH = 2560
 DEFAULT_HEIGHT = 1440
-# # COLOR_CHOICE (1=random, 2=theme)
+# COLOR_CHOICE (1=random, 2=theme)
 DEFAULT_COLOR_CHOICE = utility.get_random(2)
 DEFAULT_RANDOM_COLOR_COUNT = utility.get_random(5, 2)
 DEFAULT_COLOR_THEME = utility.get_random_color_theme(
@@ -21,7 +22,7 @@ DEFAULT_DESIGN = 1
 # image_file_directory
 # image_count
 # color_choice (1=random, 2=theme)
-# random_color_count (2=dual, 3=tri, 4=quad, 5=cint)
+# random_color_count (2=dual, 3=tri, 4=quad, 5=penta)
 # random_color_theme (array )
 # design (1=random, 2=square, 3=rectangle, 4=scales, 5=mandala)
 # canvas_width
@@ -92,16 +93,16 @@ class randomDraw2:
         self.image_file_directory = location
 
     def start(self):
-        # utility.test()
-        print("Starting to draw", self.design)
-        match (self.design):
-            case 2:
-                print("in square design")
-                Mosaic(
-                    self.canvas_width, self.canvas_height, self.design, self.color_theme
-                )
-            case _:
-                return "Out of scope"
+        form = Main_Form()
+        # print("Starting to draw", self.design)
+        # match (self.design):
+        #     case 2:
+        #         print("in square design")
+        #         Mosaic(
+        #             self.canvas_width, self.canvas_height, self.design, self.color_theme
+        #         )
+        #     case _:
+        #         return "Out of scope"
 
 
 test = randomDraw2()
