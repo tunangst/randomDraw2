@@ -2,6 +2,7 @@ import sys
 from main_utility_functions import utility
 
 from PyQt6.QtCore import Qt
+
 from PyQt6.QtWidgets import (
     QApplication,
     QComboBox,
@@ -11,6 +12,7 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QRadioButton,
     QVBoxLayout,
+    QHBoxLayout,
     QWidget,
 )
 
@@ -25,26 +27,40 @@ class Squares_Form(QMainWindow):
         self.canvas_width = cwidth
 
         self.setWindowTitle("Squares Controls")
-        layout = QVBoxLayout()
+        additional_container_layout = QVBoxLayout()
+        shape_count_layout = QHBoxLayout()
 
-        shape_count_box = QLineEdit()
+        additional_container_header = QLabel("Additional Squares Config")
+        additional_container_header.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        shape_count_label = QLabel("Aprox. Shape Count")
+
+        self.shape_count_box = QLineEdit()
         # shape_count_box.setMaxLength(6)
-        shape_count_box.setPlaceholderText(str(self.shape_count))
-        shape_count_box.textChanged.connect(self.shape_count_text_changed)
+        self.shape_count_box.setPlaceholderText(str(self.shape_count))
+        self.shape_count_box.textChanged.connect(self.shape_count_text_changed)
 
-        layout.addWidget(shape_count_box)
+        additional_container_layout.addWidget(additional_container_header)
+        additional_container_layout.addLayout(shape_count_layout)
+
+        shape_count_layout.addWidget(shape_count_label)
+        shape_count_layout.addWidget(self.shape_count_box)
 
         # Set the central widget of the Window. Widget will expand
         # to take up all the space in the window by default.
         widget = QWidget()
-        widget.setLayout(layout)
+        widget.setLayout(additional_container_layout)
         self.setCentralWidget(widget)
 
     def shape_count_text_changed(self, s):
-        int_count = int(s)
-        suggested_count = utility.get_closest_box_count(self.canvas_width, int_count)
-        self.canvas_width = suggested_count
-        print(self.canvas_width)
+        if s != "":
+            int_count = int(s)
+            suggested_count = utility.get_closest_box_count(
+                self.canvas_width, int_count
+            )
+            self.shape_count = suggested_count
+            self.shape_count_box.setText(str(suggested_count))
+        print(self.shape_count)
 
 
 # app = QApplication(sys.argv)

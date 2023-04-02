@@ -93,7 +93,10 @@ class randomDraw2:
         self.image_file_directory = location
 
     def start(self):
+        app = QApplication(sys.argv)
         form = Main_Form()
+        form.show()
+        app.exec()
         # print("Starting to draw", self.design)
         # match (self.design):
         #     case 2:

@@ -32,7 +32,12 @@ class Main_Form(QMainWindow):
         self.color_choice_index = 1
 
         self.setWindowTitle("randomDraw2 Controls")
-        main_container_layout = QVBoxLayout()
+
+        self.main_container_layout = QVBoxLayout()
+
+        draw_button = QPushButton("DRAW")
+
+        core_container_layout = QVBoxLayout()
         design_layout = QHBoxLayout()
         width_layout = QHBoxLayout()
         height_layout = QHBoxLayout()
@@ -85,31 +90,42 @@ class Main_Form(QMainWindow):
         color_count_dropdown.currentIndexChanged.connect(self.color_count_index_changed)
         color_count_dropdown.currentTextChanged.connect(self.color_count_text_changed)
 
-        main_container_layout.addLayout(design_layout)
+        self.main_container_layout.addWidget(draw_button)
+
+        self.main_container_layout.addLayout(core_container_layout)
+        core_container_layout.addLayout(design_layout)
         design_layout.addWidget(design_label)
         design_layout.addWidget(design_dropdown)
-        main_container_layout.addLayout(width_layout)
+        core_container_layout.addLayout(width_layout)
         width_layout.addWidget(width_label)
         width_layout.addWidget(width_box)
-        main_container_layout.addLayout(height_layout)
+        core_container_layout.addLayout(height_layout)
         height_layout.addWidget(height_label)
         height_layout.addWidget(height_box)
-        main_container_layout.addLayout(color_choice_layout)
+        core_container_layout.addLayout(color_choice_layout)
         color_choice_layout.addWidget(color_choice_label)
         color_choice_layout.addWidget(color_choice_dropdown)
-        main_container_layout.addLayout(color_count_layout)
+        core_container_layout.addLayout(color_count_layout)
         color_count_layout.addWidget(color_count_label)
         color_count_layout.addWidget(color_count_dropdown)
 
         # Set the central widget of the Window. Widget will expand
         # to take up all the space in the window by default.
         widget = QWidget()
-        widget.setLayout(main_container_layout)
+        widget.setLayout(self.main_container_layout)
         self.setCentralWidget(widget)
 
     def design_index_changed(self, i):  # i is an int
         print(i + 1)
         self.design_dropdown_value = i + 1
+        match self.design_dropdown_value:
+            case 2:
+                print("open squares module")
+                squares_section = Squares_Form(self.canvas_width)
+                self.main_container_layout.addWidget(squares_section)
+
+            case _:
+                print("out of scope")
 
     def design_text_changed(self, s):  # s is a str
         print(s)
@@ -135,9 +151,9 @@ class Main_Form(QMainWindow):
         print(s)
 
 
-app = QApplication(sys.argv)
-control_window = Main_Form()
-control_window.show()
-squares_window = Squares_Form(control_window.canvas_width)
-squares_window.show()
-app.exec()
+# app = QApplication(sys.argv)
+# control_window = Main_Form()
+# control_window.show()
+# # squares_window = Squares_Form(control_window.canvas_width)
+# # squares_window.show()
+# app.exec()
