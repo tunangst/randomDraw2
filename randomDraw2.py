@@ -5,6 +5,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QGraphicsScene, QGraphicsView, QApplication
 import sys
+from pprint import pprint
 
 # default variables
 DEFAULT_WIDTH = 2560
@@ -96,6 +97,7 @@ class randomDraw2:
         app = QApplication(sys.argv)
         form = Main_Form()
         form.show()
+        pprint(vars(form))
         app.exec()
         # print("Starting to draw", self.design)
         # match (self.design):
