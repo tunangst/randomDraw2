@@ -1,6 +1,7 @@
 import sys
-from .squares_form import Squares_Form
-
+from Form_dir.squares_form import Squares_Form
+from randomDraw2 import randomDraw2
+from PyQt6 import QtCore
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QApplication,
@@ -20,22 +21,30 @@ DEFAULT_DESIGN_DROPDOWN_VALUE = 1
 DEFAULT_CANVAS_WIDTH = 2560
 DEFAULT_CANVAS_HEIGHT = 1440
 DEFAULT_COLOR_CHOICE_INDEX = 1
+DEFAULT_COLOR_COUNT_INDEX = 1
 
 # Subclass QMainWindow to customize your application's main window
+
+
 class Main_Form(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.main_window = QVBoxLayout()
+        # self.setCentralWidget(self.main_window)
+
         self.design_dropdown_value = DEFAULT_DESIGN_DROPDOWN_VALUE
         self.canvas_width = DEFAULT_CANVAS_WIDTH
         self.canvas_height = DEFAULT_CANVAS_HEIGHT
         # random_color_count (1=random, 2=dual, 3=tri, 4=quad, 5=penta)
-        self.color_choice_index = 1
+        self.color_choice_index = DEFAULT_COLOR_CHOICE_INDEX
+        self.color_count_index = DEFAULT_COLOR_COUNT_INDEX
 
         self.setWindowTitle("randomDraw2 Controls")
 
         self.main_container_layout = QVBoxLayout()
 
         draw_button = QPushButton("DRAW")
+        draw_button.clicked.connect(self.draw_btn_clicked)
 
         core_container_layout = QVBoxLayout()
         design_layout = QHBoxLayout()
@@ -79,16 +88,21 @@ class Main_Form(QMainWindow):
         color_choice_dropdown = QComboBox()
         # COLOR_CHOICE (1=random, 2=theme)
         color_choice_dropdown.addItems(["Random", "Theme"])
-        color_choice_dropdown.currentIndexChanged.connect(self.design_index_changed)
-        color_choice_dropdown.currentTextChanged.connect(self.design_text_changed)
+        color_choice_dropdown.currentIndexChanged.connect(
+            self.color_choice_index_changed)
+        color_choice_dropdown.currentTextChanged.connect(
+            self.color_choice_text_changed)
 
         # WILL NEED TO BE DISABLED IF THEME IS CHOSEN
         color_count_label = QLabel("How many colors?")
         color_count_dropdown = QComboBox()
         # random_color_count (2=dual, 3=tri, 4=quad, 5=penta)
-        color_count_dropdown.addItems(["Random", "Dual", "Tri", "Quad", "Penta"])
-        color_count_dropdown.currentIndexChanged.connect(self.color_count_index_changed)
-        color_count_dropdown.currentTextChanged.connect(self.color_count_text_changed)
+        color_count_dropdown.addItems(
+            ["Random", "Dual", "Tri", "Quad", "Penta"])
+        color_count_dropdown.currentIndexChanged.connect(
+            self.color_count_index_changed)
+        color_count_dropdown.currentTextChanged.connect(
+            self.color_count_text_changed)
 
         self.main_container_layout.addWidget(draw_button)
 
@@ -111,9 +125,15 @@ class Main_Form(QMainWindow):
 
         # Set the central widget of the Window. Widget will expand
         # to take up all the space in the window by default.
-        widget = QWidget()
-        widget.setLayout(self.main_container_layout)
-        self.setCentralWidget(widget)
+        # app = QApplication(sys.argv)
+        self.controls_widget = QWidget()
+        self.controls_widget.setLayout(self.main_container_layout)
+        self.setCentralWidget(self.controls_widget)
+        # Keep this controls window on top
+        self.setWindowFlags(self.windowFlags() ^
+                            Qt.WindowType.WindowStaysOnTopHint)
+
+        # app.exec()
 
     def design_index_changed(self, i):  # i is an int
         print(i + 1)
@@ -131,29 +151,39 @@ class Main_Form(QMainWindow):
         print(s)
 
     def width_text_changed(self, s):
-        self.canvas_width = int(s)
-        print(self.canvas_width)
+        if s != "":
+            self.canvas_width = int(s)
+            print(self.canvas_width)
 
     def height_text_changed(self, s):
-        self.canvas_height = int(s)
-        print(self.canvas_height)
+        if s != "":
+            self.canvas_height = int(s)
+            print(self.canvas_height)
 
     def color_choice_index_changed(self, i):  # i is an int
+        self.color_choice_index = i + 1
         print(i + 1)
 
     def color_choice_text_changed(self, s):  # s is a str
         print(s)
 
     def color_count_index_changed(self, i):  # i is an int
+        self.color_count_index = i + 1
         print(i + 1)
 
     def color_count_text_changed(self, s):  # s is a str
         print(s)
 
+    def draw_btn_clicked(self):
+        # self.image_instance = None
+        self.image_instance = randomDraw2(self.canvas_width, self.canvas_height,
+                                          self.design_dropdown_value, self.color_choice_index, self.color_count_index)
+        self.image_instance.show()
 
-# app = QApplication(sys.argv)
-# control_window = Main_Form()
-# control_window.show()
+
 # # squares_window = Squares_Form(control_window.canvas_width)
 # # squares_window.show()
-# app.exec()
+app = QApplication(sys.argv)
+control_window = Main_Form()
+control_window.show()
+sys.exit(app.exec())

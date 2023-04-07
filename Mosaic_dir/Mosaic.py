@@ -26,7 +26,7 @@ DEFAULT_COUNT = 100
 # scene
 
 
-class Mosaic:
+class Mosaic():
     def __init__(self, cwidth, cheight, design, color_theme):
         super().__init__()
         print("~~~~~ in Mosaic_style ~~~~~~~~")
@@ -44,20 +44,19 @@ class Mosaic:
         # only currently for square
         self.shape_height = self.shape_width
 
-        self.app = QApplication(sys.argv)
-        self.scene = QGraphicsScene(0, 0, self.canvas_width, self.canvas_height)
+        # self.app = QApplication(sys.argv)
+        self.scene = QGraphicsScene(
+            0, 0, self.canvas_width, self.canvas_height)
 
-        if self.design == 2:
-            self.start()
+        self.start()
 
     def start(self):
         if self.design == 2:
-            Square(
+            return Square(
                 self.canvas_width,
                 self.canvas_height,
                 self.shape_width,
                 self.shape_count,
                 self.color_theme,
-                self.scene,
-                self.app,
+                self.scene
             )

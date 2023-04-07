@@ -25,9 +25,10 @@ import math
 
 
 class Square():
-    def __init__(self, cwidth, cheight, size, count, color_theme, scene, app):
+    def __init__(self, cwidth, cheight, size, count, color_theme, scene):
         super().__init__()
-        print('~~~~~ in Mosaic_style ~~~~~~~~')
+        print('~~~~~ in Square_style ~~~~~~~~')
+        print(locals())
         self.canvas_width = cwidth
         self.canvas_height = cheight
         self.shape_size = size
@@ -35,14 +36,13 @@ class Square():
         self.shape_count = count
         self.color_theme = color_theme
         self.scene = scene
-        self.app = app
 
         self.start()
-        
+
     def start(self):
-        print(self.color_theme)
+        print('starting Square build')
         self.squares()
-        
+
     def squares(self):
         cur_x_coord = 0
         cur_y_coord = 0
@@ -54,11 +54,13 @@ class Square():
             # fill
             selected_color = utility.get_random_theme_color(self.color_theme)
             # print('selected color ', selected_color)
-            #NEED TO SET RGB IN DICTIONARY MODE
-            fill = QBrush(QtGui.QColor(selected_color['r'],selected_color['g'],selected_color['b']))
+            # NEED TO SET RGB IN DICTIONARY MODE
+            fill = QBrush(QtGui.QColor(
+                selected_color['r'], selected_color['g'], selected_color['b']))
             rect.setBrush(fill)
             # border is the background color or first in array
-            border = QPen(QtGui.QColor(self.color_theme[0]['r'],self.color_theme[0]['g'],self.color_theme[0]['b']))
+            border = QPen(QtGui.QColor(
+                self.color_theme[0]['r'], self.color_theme[0]['g'], self.color_theme[0]['b']))
             border.setWidth(3)
             rect.setPen(border)
             # add to scene
@@ -71,12 +73,10 @@ class Square():
                 cur_y_coord += self.shape_size
 
         # show the scene
-        view = QGraphicsView(self.scene)
-        view.show()
+        squares = QGraphicsView(self.scene)
+        squares.show()
         # keep the scene open
-        self.app.exec()
-    
-
+        # self.app.exec()
 
 
 # If we don't set this on creation, we can set it later with .setSceneRect

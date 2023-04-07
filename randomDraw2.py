@@ -1,9 +1,9 @@
-from Form_dir.main_form import Main_Form
+# from Form_dir.main_form import Main_Form
 from Mosaic_dir.Mosaic import Mosaic
 from main_utility_functions import utility
 from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QGraphicsScene, QGraphicsView, QApplication
+from PyQt6.QtWidgets import QGraphicsScene, QGraphicsView, QApplication, QMainWindow, QWidget, QVBoxLayout, QDialog
 import sys
 from pprint import pprint
 
@@ -30,28 +30,35 @@ DEFAULT_DESIGN = 1
 # canvas_height
 
 # ADD CHECKS ON USER INPUTS
+DEFAULT_IMAGE_COUNT = 100
 
 
-class randomDraw2:
+class randomDraw2(QDialog):
     def __init__(
         self,
-        location="~/Pictures/randomDraw2",
-        img_count=1,
-        width=DEFAULT_WIDTH,
-        height=DEFAULT_HEIGHT,
+        cwidth=DEFAULT_WIDTH,
+        cheight=DEFAULT_HEIGHT,
+        design=DEFAULT_DESIGN,
+        color_choice=DEFAULT_COLOR_CHOICE,
+        color_count=DEFAULT_RANDOM_COLOR_COUNT,
+        img_count=DEFAULT_IMAGE_COUNT,
+        location="~/Pictures/randomDraw2"
     ):
         super().__init__()
+        self.canvas_width = cwidth
+        self.canvas_height = cheight
+        self.design = design
+        self.color_choice = color_choice
+        self.color_count = color_count
         self.image_file_directory = location
         self.image_count = img_count
         # color_choice (1=random, 2=theme)
-        self.color_choice = DEFAULT_COLOR_CHOICE
-        # random_color_count 2=dual, 3=tri, 4=quad, 5=cint)
-        self.random_color_count = DEFAULT_RANDOM_COLOR_COUNT
+        # color_count 2=dual, 3=tri, 4=quad, 5=cint)
         self.color_theme = DEFAULT_COLOR_THEME
         # design (1=random, 2=square, 3=rectangle, 4=scales, 5=mandala)
-        self.design = DEFAULT_DESIGN
-        self.canvas_width = width
-        self.canvas_height = height
+        self.layout = None
+
+        self.start()
 
     def set_design(self, choice):
         # design (1=random, 2=square, 3=rectangle, 4=scales, 5=mandala)
@@ -68,17 +75,17 @@ class randomDraw2:
         match (choice):
             case 1:
                 self.color_choice = 1
-                # random_color_count (2=dual, 3=tri, 4=quad, 5=cint)
-                self.random_color_count = utility.get_random(5, 2)
+                # color_count (2=dual, 3=tri, 4=quad, 5=cint)
+                self.color_count = utility.get_random(5, 2)
                 # background (1=random, 2=black, 3=white)
                 self.color_theme = utility.get_random_color_theme(
-                    self.color_choice, self.random_color_count
+                    self.color_choice, self.color_count
                 )
             case 2:
                 print("in randomDraw2, set_color_choice")
                 self.color_choice = 2
                 self.color_theme = utility.get_random_color_theme(
-                    self.color_choice, self.random_color_count
+                    self.color_choice, self.color_count
                 )
             case _:
                 return "Out of scope"
@@ -94,23 +101,26 @@ class randomDraw2:
         self.image_file_directory = location
 
     def start(self):
-        app = QApplication(sys.argv)
-        form = Main_Form()
-        form.show()
-        pprint(vars(form))
-        app.exec()
+        print('started')
+        self.layout = QVBoxLayout()
+        # self.label = QLabel("Another Window")
+        # layout.addWidget(self.label)
+
+        # app = QApplication(sys.argv)
+        # app.exec()
         # print("Starting to draw", self.design)
-        # match (self.design):
-        #     case 2:
-        #         print("in square design")
-        #         Mosaic(
-        #             self.canvas_width, self.canvas_height, self.design, self.color_theme
-        #         )
-        #     case _:
-        #         return "Out of scope"
-
-
-test = randomDraw2()
-# test.set_color_choice(2)
-test.set_design(2)
-test.start()
+        match (self.design):
+            case 2:
+                print("in square design")
+                painting = Mosaic(
+                    self.canvas_width, self.canvas_height, self.design, self.color_theme
+                )
+                self.layout.addLayout(painting)
+                # mosaic.build.show()
+            case _:
+                return "Out of scope"
+        self.setLayout(self.layout)
+        # test = randomDraw2()
+        # # test.set_color_choice(2)
+        # test.set_design(2)
+        # test.start()
