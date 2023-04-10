@@ -33,7 +33,7 @@ DEFAULT_DESIGN = 1
 DEFAULT_IMAGE_COUNT = 100
 
 
-class randomDraw2(QDialog):
+class randomDraw2(QMainWindow):
     def __init__(
         self,
         cwidth=DEFAULT_WIDTH,
@@ -54,9 +54,16 @@ class randomDraw2(QDialog):
         self.image_count = img_count
         # color_choice (1=random, 2=theme)
         # color_count 2=dual, 3=tri, 4=quad, 5=cint)
-        self.color_theme = DEFAULT_COLOR_THEME
+        self.color_theme = utility.get_random_color_theme(
+            DEFAULT_COLOR_CHOICE, DEFAULT_RANDOM_COLOR_COUNT
+        )
         # design (1=random, 2=square, 3=rectangle, 4=scales, 5=mandala)
-        self.layout = None
+        self.mosaic_painting = None
+
+        # self.canvas_widget = QWidget()
+        # self.canvas_layout = QVBoxLayout()
+        # self.canvas_widget.setLayout(self.main_container_layout)
+        # self.setCentralWidget(self.canvas_widget)
 
         self.start()
 
@@ -102,25 +109,18 @@ class randomDraw2(QDialog):
 
     def start(self):
         print('started')
-        self.layout = QVBoxLayout()
-        # self.label = QLabel("Another Window")
-        # layout.addWidget(self.label)
 
-        # app = QApplication(sys.argv)
-        # app.exec()
-        # print("Starting to draw", self.design)
         match (self.design):
             case 2:
                 print("in square design")
-                painting = Mosaic(
+                self.mosaic_painting = Mosaic(
                     self.canvas_width, self.canvas_height, self.design, self.color_theme
                 )
-                self.layout.addLayout(painting)
-                # mosaic.build.show()
+                # mosaic_painting.show()
+                print('randomDraw Mosaic_painting')
+                pprint(vars(self.mosaic_painting))
+
+                return self.mosaic_painting
+
             case _:
                 return "Out of scope"
-        self.setLayout(self.layout)
-        # test = randomDraw2()
-        # # test.set_color_choice(2)
-        # test.set_design(2)
-        # test.start()

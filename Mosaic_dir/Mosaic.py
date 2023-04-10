@@ -1,5 +1,6 @@
 from main_utility_functions import utility
 from .Squares import Square
+from pprint import pprint
 
 from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.QtCore import Qt
@@ -9,6 +10,7 @@ from PyQt6.QtWidgets import (
     QGraphicsView,
     QApplication,
     QGraphicsRectItem,
+    QWidget
 )
 import sys
 import math
@@ -26,7 +28,7 @@ DEFAULT_COUNT = 100
 # scene
 
 
-class Mosaic():
+class Mosaic(QGraphicsView):
     def __init__(self, cwidth, cheight, design, color_theme):
         super().__init__()
         print("~~~~~ in Mosaic_style ~~~~~~~~")
@@ -44,19 +46,27 @@ class Mosaic():
         # only currently for square
         self.shape_height = self.shape_width
 
+        self.squares_painting = None
+
         # self.app = QApplication(sys.argv)
-        self.scene = QGraphicsScene(
-            0, 0, self.canvas_width, self.canvas_height)
+        # self.graphic_scene = QGraphicsScene(
+        #     0, 0, self.canvas_width, self.canvas_height)
 
         self.start()
 
     def start(self):
         if self.design == 2:
-            return Square(
+            self.squares_painting = Square(
                 self.canvas_width,
                 self.canvas_height,
                 self.shape_width,
                 self.shape_count,
-                self.color_theme,
-                self.scene
+                self.color_theme
             )
+            print('Mosaic vars for square')
+            pprint(vars(self.squares_painting))
+            # pprint(vars(squares_painting.squares_view))
+            # print('~~~~~~squares painting')
+            # pprint(squares_painting.squares_view)
+            # print('~~~~~~view')
+        return self.squares_painting

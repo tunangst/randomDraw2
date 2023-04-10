@@ -2,7 +2,7 @@ import sys
 from Form_dir.squares_form import Squares_Form
 from randomDraw2 import randomDraw2
 from PyQt6 import QtCore
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QApplication,
     QComboBox,
@@ -27,9 +27,13 @@ DEFAULT_COLOR_COUNT_INDEX = 1
 
 
 class Main_Form(QMainWindow):
-    def __init__(self):
+    # window_refresh = pyqtSignal()
+
+    def __init__(self, parent=None):
         super().__init__()
+        self.parent = parent
         self.main_window = QVBoxLayout()
+        self.image_instance = QVBoxLayout()
         # self.setCentralWidget(self.main_window)
 
         self.design_dropdown_value = DEFAULT_DESIGN_DROPDOWN_VALUE
@@ -40,6 +44,7 @@ class Main_Form(QMainWindow):
         self.color_count_index = DEFAULT_COLOR_COUNT_INDEX
 
         self.setWindowTitle("randomDraw2 Controls")
+        self.move(0, 0)
 
         self.main_container_layout = QVBoxLayout()
 
@@ -135,6 +140,18 @@ class Main_Form(QMainWindow):
 
         # app.exec()
 
+    # def refresh(self, event):
+    #     self.window_refresh.emit()
+        # print(event)
+        # event.accept()
+        # pass
+        # self.window_closed.emit()
+        # event.accept()
+        # event.ignore() # if you want the window to never be closed
+
+    # def event(self, e):
+    #     print(e)
+
     def design_index_changed(self, i):  # i is an int
         print(i + 1)
         self.design_dropdown_value = i + 1
@@ -174,16 +191,19 @@ class Main_Form(QMainWindow):
     def color_count_text_changed(self, s):  # s is a str
         print(s)
 
-    def draw_btn_clicked(self):
+    def draw_btn_clicked(self, e):
+        self.parent.refresh_received()
+        # print(e)
+
         # self.image_instance = None
-        self.image_instance = randomDraw2(self.canvas_width, self.canvas_height,
-                                          self.design_dropdown_value, self.color_choice_index, self.color_count_index)
-        self.image_instance.show()
+        # self.image_instance = randomDraw2(self.canvas_width, self.canvas_height,
+        #                                   self.design_dropdown_value, self.color_choice_index, self.color_count_index)
+        # self.image_instance.show()
 
 
 # # squares_window = Squares_Form(control_window.canvas_width)
 # # squares_window.show()
-app = QApplication(sys.argv)
-control_window = Main_Form()
-control_window.show()
-sys.exit(app.exec())
+# app = QApplication(sys.argv)
+# control_window = Main_Form()
+# control_window.show()
+# sys.exit(app.exec())

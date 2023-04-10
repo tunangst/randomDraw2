@@ -24,19 +24,21 @@ import math
 # fill
 
 
-class Square():
-    def __init__(self, cwidth, cheight, size, count, color_theme, scene):
+class Square(QGraphicsView):
+    def __init__(self, cwidth, cheight, size, count, color_theme):
         super().__init__()
         print('~~~~~ in Square_style ~~~~~~~~')
-        print(locals())
+        # print(locals())
         self.canvas_width = cwidth
         self.canvas_height = cheight
         self.shape_size = size
-        self.size = size
         self.shape_count = count
         self.color_theme = color_theme
-        self.scene = scene
+        # self.scene = scene
+        self.squares_board = None
 
+        self.graphic_scene = QGraphicsScene(
+            0, 0, self.canvas_width, self.canvas_height)
         self.start()
 
     def start(self):
@@ -64,7 +66,7 @@ class Square():
             border.setWidth(3)
             rect.setPen(border)
             # add to scene
-            self.scene.addItem(rect)
+            self.graphic_scene.addItem(rect)
 
             # loop over x and y length based on shape size
             cur_x_coord += self.shape_size
@@ -73,8 +75,10 @@ class Square():
                 cur_y_coord += self.shape_size
 
         # show the scene
-        squares = QGraphicsView(self.scene)
-        squares.show()
+        self.squares_board = QGraphicsView(self.graphic_scene)
+        # self.squares_board.show()
+        return self.squares_board
+        # return squares
         # keep the scene open
         # self.app.exec()
 
