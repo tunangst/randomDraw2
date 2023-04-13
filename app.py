@@ -1,7 +1,9 @@
 import sys
 from pprint import pprint
 from Form_dir.main_form import Main_Form
-from randomDraw2 import randomDraw2
+from Mandala_dir.rotating_shapes import Rotating_shapes
+# from randomDraw2 import randomDraw2
+from Mosaic_dir.Squares import Square
 from PyQt6 import QtCore, QtGui
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
@@ -28,31 +30,37 @@ class app(QMainWindow):
 
     def start(self):
         self.form_window = Main_Form(parent=self)
-        # self.form_window.window_refresh.connect(self.refresh_received)
-        self.canvas_window = randomDraw2()
+        self.design = self.form_window.design_dropdown_value
+
+        self.build_shape_class(5)
+        # self.canvas_window = Square(self.form_window.canvas_width,
+        #                             self.form_window.canvas_height,
+        #                             self.form_window.design_dropdown_value,
+        #                             self.form_window.color_choice_index,
+        #                             self.form_window.color_count_index)
         self.form_window.show()
         # self.canvas_window.show()
 
     def refresh_received(self):
-        pprint(vars(self.form_window))
-        self.canvas_window = randomDraw2(
-            cwidth=self.form_window.canvas_width,
-            cheight=self.form_window.canvas_height,
-            design=self.form_window.design_dropdown_value,
-            color_choice=self.form_window.color_choice_index,
-            color_count=self.form_window.color_count_index
-            # img_count=self.form_window.shape_count
-        )
-        self.refresh_canvas_window()
-
+        self.canvas_window = self.build_shape_class(5)
+        # print(self.canvas_window.__dict__)
         print('refreshed')
 
-    def refresh_canvas_window(self):
-        print('inside refresh canvas')
-        squares_painting = self.canvas_window.mosaic_painting.squares_painting.squares_board
-        squares_painting.setWindowTitle("randomDraw2 Canvas")
-        squares_painting.showMaximized()
-        squares_painting.show()
+    def build_shape_class(self, design_nbr):
+        # DESIGN (1=random, 2=square, 3=rectangle, 4=scales, 5=mandala)
+        match design_nbr:
+            case 2:
+                self.canvas_window = Square(
+                    self.form_window.canvas_width,
+                    self.form_window.canvas_height,
+                    self.form_window.design_dropdown_value,
+                    self.form_window.color_choice_index,
+                    self.form_window.color_count_index
+                )
+            case 5:
+                self.canvas_window = Rotating_shapes()
+            case _:
+                print('out of scope')
 
 
 run_app = QApplication(sys.argv)

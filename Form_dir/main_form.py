@@ -138,19 +138,8 @@ class Main_Form(QMainWindow):
         self.setWindowFlags(self.windowFlags() ^
                             Qt.WindowType.WindowStaysOnTopHint)
 
-        # app.exec()
-
-    # def refresh(self, event):
-    #     self.window_refresh.emit()
-        # print(event)
-        # event.accept()
-        # pass
-        # self.window_closed.emit()
-        # event.accept()
-        # event.ignore() # if you want the window to never be closed
-
-    # def event(self, e):
-    #     print(e)
+    def closeEvent(self, e):
+        sys.exit(0)
 
     def design_index_changed(self, i):  # i is an int
         print(i + 1)

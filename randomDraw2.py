@@ -1,5 +1,3 @@
-# from Form_dir.main_form import Main_Form
-from Mosaic_dir.Mosaic import Mosaic
 from main_utility_functions import utility
 from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.QtCore import Qt
@@ -8,7 +6,7 @@ import sys
 from pprint import pprint
 
 # default variables
-DEFAULT_WIDTH = 2560
+DEFAULT_WIDTH = 5120
 DEFAULT_HEIGHT = 1440
 # COLOR_CHOICE (1=random, 2=theme)
 DEFAULT_COLOR_CHOICE = utility.get_random(2)
@@ -58,14 +56,14 @@ class randomDraw2(QMainWindow):
             DEFAULT_COLOR_CHOICE, DEFAULT_RANDOM_COLOR_COUNT
         )
         # design (1=random, 2=square, 3=rectangle, 4=scales, 5=mandala)
-        self.mosaic_painting = None
+        # self.mosaic_painting = None
 
         # self.canvas_widget = QWidget()
         # self.canvas_layout = QVBoxLayout()
         # self.canvas_widget.setLayout(self.main_container_layout)
         # self.setCentralWidget(self.canvas_widget)
 
-        self.start()
+        # self.start()
 
     def set_design(self, choice):
         # design (1=random, 2=square, 3=rectangle, 4=scales, 5=mandala)
@@ -113,14 +111,14 @@ class randomDraw2(QMainWindow):
         match (self.design):
             case 2:
                 print("in square design")
-                self.mosaic_painting = Mosaic(
-                    self.canvas_width, self.canvas_height, self.design, self.color_theme
-                )
+                # self.mosaic_painting = Mosaic(self,
+                #                               self.canvas_width, self.canvas_height, self.design, self.color_theme
+                #                               )
                 # mosaic_painting.show()
                 print('randomDraw Mosaic_painting')
-                pprint(vars(self.mosaic_painting))
+                # pprint(vars(self.mosaic_painting))
 
-                return self.mosaic_painting
+                # return self.mosaic_painting
 
             case _:
                 return "Out of scope"

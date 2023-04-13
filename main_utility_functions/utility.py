@@ -98,6 +98,28 @@ def get_closest_box_count(width, count):
         increment += 1
 
 
+def get_shape_center_point(shape_width, shape_height):
+    center_of_shape = (shape_width/2, shape_height/2)
+    return center_of_shape
+
+
+def get_shape_center_rotation_point(shape_depth, canvas_center_point):
+    # will be centered on x-axis
+    canvas_center_width = 0
+    canvas_center_height = canvas_center_point[1]
+    center_of_canvas_height_relative_to_shape_center = canvas_center_height - \
+        shape_depth
+    center_point = (canvas_center_width,
+                    center_of_canvas_height_relative_to_shape_center)
+    # print(center_point)
+    return center_point
+
+
+def get_shape_rotation_angle(shape_quantity):
+    angle = 360/shape_quantity
+    return angle
+
+
 def test():
     from .Themes.themes3 import themes_array
 
@@ -111,7 +133,7 @@ def test():
             # print(color_string_split)
             r = int(color_string_split[0][4:])
             g = int(color_string_split[1])
-            b = int(color_string_split[2][0 : len(color_string_split[2]) - 1])
+            b = int(color_string_split[2][0: len(color_string_split[2]) - 1])
             # print('r g b ', r, ' ', g, ' ', b)
             new_color_theme_array_of_objects.append({"r": r, "g": g, "b": b})
             # print(new_color_theme_array_of_objects)
