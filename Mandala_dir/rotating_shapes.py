@@ -1,4 +1,4 @@
-from main_utility_functions.utility import get_shape_center_point, get_shape_center_rotation_point
+from main_utility_functions.utility import get_shape_center_point, get_shape_center_rotation_point, get_random_theme_color
 from Mandala_dir.Mandala import Mandala
 from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.QtCore import Qt, QPointF
@@ -23,35 +23,50 @@ class Rotating_shapes(Mandala):
         # loop over number of circles chosen
         while self.number_of_replication_circles > 0:
             circles_index = self.number_of_replication_circles - 1
+            shape = self.shape_object_array[circles_index]
             print(circles_index)
+            print(shape)
             # loop over number of shape counts chosen
-            while self.shape_count_array[circles_index] > 0:
-
-                shape_width = 100
-                shape_height = 10
+            selected_color = None
+            if self.is_same_color_loops:
+                selected_color = self.get_chosen_loop_color()
+            while shape['chosen_count'] > 0:
                 shape_center = get_shape_center_point(
-                    shape_width, shape_height)
+                    shape['chosen_width'], shape['chosen_height'])
                 rotation_center = get_shape_center_rotation_point(
-                    self.shape_depth_array[circles_index], self.center_point)
+                    shape['chosen_depth'], self.canvas_center_point)
                 # build shape at graph origin
-                ellipse = QGraphicsEllipseItem(0, 0, shape_width, shape_height)
+                ellipse = QGraphicsEllipseItem(
+                    0, 0, shape['chosen_width'], shape['chosen_height'])
                 # set center to shape center for initial move
                 ellipse.setTransformOriginPoint(
                     QPointF(shape_center[0], shape_center[1]))
                 # move shape to width center at chosen depth
                 ellipse.setPos(
-                    QPointF(self.center_point[0], self.shape_depth_array[circles_index]))
+                    QPointF(self.canvas_center_point[0], shape['chosen_depth']))
                 # set transformation point to center based on new shape initialized position
                 ellipse.setTransformOriginPoint(
                     QPointF(rotation_center[0], rotation_center[1]))
                 # print(rotation_center)
                 ellipse.setRotation(current_degrees)
-                current_degrees += self.shape_rotation_array[circles_index]
+                current_degrees += shape['chosen_angle']
 
-                brush = QBrush(Qt.GlobalColor.blue)
-                ellipse.setBrush(brush)
+                if self.is_same_color_loops == False:
+                    selected_color = self.get_chosen_loop_color()
+
+                fill = QBrush(QtGui.QColor(
+                    selected_color['r'], selected_color['g'], selected_color['b']))
+                ellipse.setBrush(fill)
+
+                # stroke = QPen(Qt.GlobalColor.blue)
+                stroke = QPen(QtGui.QColor(
+                    self.color_theme[0]['r'], self.color_theme[0]['g'], self.color_theme[0]['b']))
+                stroke.setWidth(shape['chosen_stroke'])
+                ellipse.setPen(stroke)
+                # fill = QBrush(Qt.GlobalColor.blue)
+                # ellipse.setBrush(fill)
                 self.graphic_scene.addItem(ellipse)
-                self.shape_count_array[circles_index] -= 1
+                shape['chosen_count'] -= 1
             self.number_of_replication_circles -= 1
         # ellipse = QGraphicsEllipseItem(0, 0, 100, 100)
         # brush = QBrush(Qt.GlobalColor.blue)

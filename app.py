@@ -32,7 +32,7 @@ class app(QMainWindow):
         self.form_window = Main_Form(parent=self)
         self.design = self.form_window.design_dropdown_value
 
-        self.build_shape_class(5)
+        self.canvas_window = self.build_shape_class(5)
         # self.canvas_window = Square(self.form_window.canvas_width,
         #                             self.form_window.canvas_height,
         #                             self.form_window.design_dropdown_value,
@@ -50,7 +50,7 @@ class app(QMainWindow):
         # DESIGN (1=random, 2=square, 3=rectangle, 4=scales, 5=mandala)
         match design_nbr:
             case 2:
-                self.canvas_window = Square(
+                return Square(
                     self.form_window.canvas_width,
                     self.form_window.canvas_height,
                     self.form_window.design_dropdown_value,
@@ -58,7 +58,7 @@ class app(QMainWindow):
                     self.form_window.color_count_index
                 )
             case 5:
-                self.canvas_window = Rotating_shapes()
+                return Rotating_shapes()
             case _:
                 print('out of scope')
 

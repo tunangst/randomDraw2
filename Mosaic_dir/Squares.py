@@ -57,10 +57,10 @@ class Square(Mosaic):
                 selected_color['r'], selected_color['g'], selected_color['b']))
             rect.setBrush(fill)
             # border is the background color or first in array
-            border = QPen(QtGui.QColor(
+            stroke = QPen(QtGui.QColor(
                 self.color_theme[0]['r'], self.color_theme[0]['g'], self.color_theme[0]['b']))
-            border.setWidth(3)
-            rect.setPen(border)
+            stroke.setWidth(3)
+            rect.setPen(stroke)
             # add to scene
             self.graphic_scene.addItem(rect)
 
