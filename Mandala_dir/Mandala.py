@@ -67,7 +67,12 @@ class Mandala(randomDraw2):
 
     def get_chosen_depth(self):
         # from focus radius max to past origin 1/2 on the other side
-        return get_random(self.focus_radius, self.canvas_center_point[1] - self.focus_radius/2)
+        get_depth = get_random(
+            self.focus_radius)
+
+        if get_depth > self.canvas_center_point[1]:
+            get_depth *= -1
+        return get_depth
 
     def get_chosen_loop_color(self):
         return get_random_theme_color(self.color_theme)
