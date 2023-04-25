@@ -30,93 +30,72 @@ class Rotating_shapes(Mandala):
         shape_center = get_shape_center_point(
             shape['chosen_width'], shape['chosen_height'])
 
-        self.current_degrees = 0
-
-        painter = QPainter(self.canvas)
-
+        current_degrees = 0
         temp_index = 1
         # loop over number of circles chosen
         while temp_index > 0:
             # while self.number_of_replication_circles > 0:
             temp_index -= 1
-
-            painter.translate(
-                self.canvas_center_point[0], self.canvas_center_point[1])
-            painter.save()
-
             circles_index = self.number_of_replication_circles - 1
             shape = self.shape_object_array[circles_index]
 
-            # shape['chosen_width'] = 200
-            # shape['chosen_height'] = 100
-            # shape['chosen_depth'] = 200
-            # shape['chosen_count'] = 20
-            # shape['chosen_angle'] = 360/shape['chosen_count']
-
-            self.shape_center = get_shape_center_point(
-                shape['chosen_width'], shape['chosen_height'])
-
-            # painter.translate(
-            #     self.canvas_center_point[0], shape['chosen_depth'])
+            shape['chosen_height'] = 400
+            shape['chosen_depth'] = 900
+            shape['chosen_angle'] = 36
+            shape['chosen_count'] = 10
+            print(circles_index)
+            print(shape)
+            print('depth, canvas y, shape height')
+            print(shape['chosen_depth'],
+                  self.canvas_center_point[1], shape['chosen_height'])
+            # loop over number of shape counts chosen
+            # selected_color = None
+            # if self.is_same_color_loops:
+            #     selected_color = self.get_chosen_loop_color()
+            painter = QPainter(self.canvas)
+            painter.translate(
+                self.canvas_center_point[0], shape['chosen_depth'])
             # painter.translate(
             #     self.canvas_center_point[0] - shape_center[0], shape['chosen_depth'] - shape_center[1])
             while shape['chosen_count'] > 0:
-
                 # painter.setRenderHint(QPainter.Antialiasing)
-                # pen = QtGui.QPen()
-                # pen.setWidth(15)
-                # pen.setColor(QtGui.QColor('blue'))
-                # painter.setPen(pen)
+                pen = QtGui.QPen()
+                pen.setWidth(15)
+                pen.setColor(QtGui.QColor('blue'))
+                painter.setPen(pen)
+                # temp_index = 6
+                # while temp_index > 0:
+                shape_center = get_shape_center_point(
+                    shape['chosen_width'], shape['chosen_height'])
+                # painter.translate(-shape_center[0], -
+                #                   shape_center[1] - shape['chosen_depth'])
+                painter.rotate(current_degrees)
+                painter.drawEllipse(
+                    0, 0, shape['chosen_width'], shape['chosen_height'])
+                current_degrees += shape['chosen_angle']
+                # painter.end()
+                # print('shape x center, shape y center: ', shape_center)
+                # print('shape width, height: ',
+                #       shape['chosen_width'], shape['chosen_height'])
+                # rotation_center = get_shape_center_rotation_point(
+                #     shape['chosen_depth'], self.canvas_center_point)
+                # build shape at graph origin
 
-                painter.drawLine(0, 0, 10, 10)
+                # ellipse.setPos(
+                #     QPointF(self.canvas_center_point[0] - shape_center[0], shape['chosen_depth']))
 
-                # print(current_degrees)
-                # print(shape['chosen_count'])
-                self.draw_shape(painter, shape)
+                # ellipse.setTransformOriginPoint(
+                #     shape_center[0], self.find_y_transformation_to_canvas_center(shape['chosen_depth'], shape_center[1] + shape_center[1]/2))
 
-                # painter.drawEllipse(
-                #     0, 0, shape['chosen_width'], shape['chosen_height'])
-                self.current_degrees += shape['chosen_angle']
+                # if self.is_same_color_loops == False:
+                #     selected_color = self.get_chosen_loop_color()
 
+                # fill = QBrush(QtGui.QColor(
+                #     selected_color['r'], selected_color['g'], selected_color['b']))
+                # ellipse.setBrush(fill)
                 shape['chosen_count'] -= 1
-            painter.restore()
-        painter.end()
+            painter.end()
 
-    def draw_shape(self, painter, shape):
-        print('shape width: ', shape['chosen_width'])
-        print('half shape width: ', self.shape_center[0])
-        print('shape height: ', shape['chosen_height'])
-        print('half shape height: ', self.shape_center[1])
-
-        print(-self.shape_center[0],
-              self.shape_center[1] - shape['chosen_depth'])
-        pen = QtGui.QPen()
-        pen.setWidth(5)
-        pen.setColor(QtGui.QColor('blue'))
-        painter.setPen(pen)
-        print(self.current_degrees)
-        print(shape['chosen_count'])
-
-        # painter.translate(
-        #     self.canvas_center_point[0] - shape_center[0], shape['chosen_depth'] - shape_center[1])
-        # painter.translate(
-        #     self.canvas_center_point[0], self.canvas_center_point[1])
-        # print(shape_center, shape['chosen_depth'])
-        # print(-int(shape['chosen_width']/2), -int(shape['chosen_height']/2),
-        #       int(shape['chosen_width']/2), int(shape['chosen_height']/2))
-        painter.save()
-        painter.rotate(self.current_degrees)
-        painter.translate(-self.shape_center[0],
-                          self.shape_center[1] - shape['chosen_depth'])
-        # painter.translate(-100, -shape['chosen_depth'])
-        painter.drawEllipse(
-            0, 0, shape['chosen_width'], shape['chosen_height'])
-        painter.restore()
-        # painter.drawEllipse(0, 0, 200, 100)
-        # painter.drawEllipse(
-        #     -int(shape['chosen_width']/2), -int(shape['chosen_height']/2), int(shape['chosen_width']/2), int(shape['chosen_height']/2))
-        # painter.drawEllipse(
-        #     0, 0, shape['chosen_width'], shape['chosen_height'])
 
 # # depth + 1/2 shape height - 1/2 canvas height
 #                 # stroke = QPen(Qt.GlobalColor.blue)
