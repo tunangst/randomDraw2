@@ -21,7 +21,7 @@ DEFAULT_DESIGN = 1
 # image_file_directory
 # image_count
 # color_choice (1=random, 2=theme)
-# random_color_count (2=dual, 3=tri, 4=quad, 5=penta)
+# random_color_count (2=dual, 3=tri, 4=quad, 5=penta, 6=all random)
 # random_color_theme (array )
 # design (1=random, 2=square, 3=rectangle, 4=scales, 5=mandala)
 # canvas_width
@@ -46,15 +46,21 @@ class randomDraw2(QMainWindow):
         self.canvas_width = cwidth
         self.canvas_height = cheight
         self.design = design
+        # color_choice (1=random, 2=theme)
         self.color_choice = color_choice
+        # theme_type (1=random theme color, 2= cycle theme color)
+        self.theme_type = 2
+        # color_count (1= full random, 2=dual, 3=tri, 4=quad, 5=cint)
         self.color_count = color_count
         self.image_file_directory = location
         self.image_count = img_count
-        # color_choice (1=random, 2=theme)
-        # color_count 2=dual, 3=tri, 4=quad, 5=cint)
         self.color_theme = utility.get_random_color_theme(
-            DEFAULT_COLOR_CHOICE, DEFAULT_RANDOM_COLOR_COUNT
+            2, 0
         )
+        print(self.color_theme)
+        # self.color_theme = utility.get_random_color_theme(
+        #     DEFAULT_COLOR_CHOICE, DEFAULT_RANDOM_COLOR_COUNT
+        # )
         # design (1=random, 2=square, 3=rectangle, 4=scales, 5=mandala)
         # self.mosaic_painting = None
 
@@ -77,6 +83,7 @@ class randomDraw2(QMainWindow):
 
     def set_color_choice(self, choice):
         # color_choice (1=random, 2=theme)
+        print('in set_color_choice', choice)
         match (choice):
             case 1:
                 self.color_choice = 1

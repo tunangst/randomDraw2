@@ -1,4 +1,4 @@
-from main_utility_functions import utility
+from main_utility_functions.utility import get_random_theme_color
 from Mosaic_dir.Mosaic import Mosaic
 from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.QtCore import Qt
@@ -10,7 +10,7 @@ import math
 
 # DEFAULT_DESIGN = 'square'
 # CONTROL_SIZE = DEFAULT_WIDTH if DEFAULT_WIDTH > DEFAULT_HEIGHT else DEFAULT_HEIGHT
-# DEFAULT_COUNT = utility.find_closest_box_count(
+# DEFAULT_COUNT = find_closest_box_count(
 #     CONTROL_SIZE, 100)
 
 # class variables
@@ -50,7 +50,7 @@ class Square(Mosaic):
                 cur_x_coord, cur_y_coord, self.shape_size, self.shape_size)
             # rect.setPos(cur_x_coord, cur_y_coord)
             # fill
-            selected_color = utility.get_random_theme_color(self.color_theme)
+            selected_color = get_random_theme_color(self.color_theme)
             # print('selected color ', selected_color)
             # NEED TO SET RGB IN DICTIONARY MODE
             fill = QBrush(QtGui.QColor(
@@ -112,7 +112,7 @@ class Square(Mosaic):
 #                 cur_x_coord, cur_y_coord, self.shape_size, self.shape_size)
 #             # rect.setPos(cur_x_coord, cur_y_coord)
 #             # fill
-#             selected_color = utility.get_random_theme_color(self.color_theme)
+#             selected_color = .get_random_theme_color(self.color_theme)
 #             # print('selected color ', selected_color)
 #             # NEED TO SET RGB IN DICTIONARY MODE
 #             fill = QBrush(QtGui.QColor(

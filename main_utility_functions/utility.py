@@ -8,6 +8,11 @@ def get_random_theme_color(color_array):
     return color_array[random_index]
 
 
+def get_chosen_theme_color(color_array, color_index):
+    chosen_color = color_array[color_index]
+    return chosen_color
+
+
 def get_random_rgb_color(bg=False):
     # bg is true, labeled as background choice black or white
     color_dictionary = {}
@@ -17,14 +22,14 @@ def get_random_rgb_color(bg=False):
             return {"r": 0, "g": 0, "b": 0}
         else:
             return {"r": 255, "g": 255, "b": 255}
-
-    r = get_random(255)
-    g = get_random(255)
-    b = get_random(255)
-    color_dictionary["r"] = r
-    color_dictionary["g"] = g
-    color_dictionary["b"] = b
-    # print('COLOR DICTIONARY ', color_dictionary)
+    else:
+        r = get_random(255)
+        g = get_random(255)
+        b = get_random(255)
+        color_dictionary["r"] = r
+        color_dictionary["g"] = g
+        color_dictionary["b"] = b
+        # print('COLOR DICTIONARY ', color_dictionary)
     return color_dictionary
 
 
@@ -47,10 +52,12 @@ def get_random_color_theme(color_choice, color_count):
         case 2:
             # import themes array
             from .Themes.themes import themes_array
-
+            print('in get_random_color_theme, theme choice case 2')
             # print('in get_random_color_theme choice =1')
             # choose array from master
-            chosen_theme = themes_array[get_random(len(themes_array))]
+            print('in utility get_random_color_theme, forcing color theme: remove later')
+            chosen_theme = themes_array[0]
+            # chosen_theme = themes_array[get_random(len(themes_array))]
             return chosen_theme
         case _:
             print("Out of scope")
