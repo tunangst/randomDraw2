@@ -46,8 +46,29 @@ class Mandala(randomDraw2):
 
         # loop
         self.loop_shape_array = []
-        self.loop_random_or_themed
-
+        self.shape_count = None
+        self.loop_radius = self.get_chosen_depth()
+        self.loop_blending_mode = None
+        # self.loop_random_or_themed
+        # loop_color_set (All Random, Random Random, Every Other Random, All Same, Random Theme, Incremental Theme)
+        self.loop_color_set = "All Random"
+        # loop_shape_set (All Random, Random Random, Every Other Random, All Same, Incremental)
+        self.loop_shape_set = "All Random"
+        # offset (-10, 10)
+        self.shape_width_offset = 0
+        self.shape_height_offset = 0
+        self.shape_color_r_offset = 0
+        self.shape_color_g_offset = 0
+        self.shape_color_b_offset = 0
+        
+        # shape
+        self.shape = None
+        self.shape_width = None
+        self.shape_height = None
+        self.shape_color = None
+        
+    def build_shape(self):
+        
     def get_loop_array_counts(self):
         num_of_rep_cir = self.number_of_replication_circles
         while num_of_rep_cir > 0:
