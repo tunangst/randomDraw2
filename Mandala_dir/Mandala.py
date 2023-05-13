@@ -5,6 +5,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QBrush, QPen
 from PyQt6.QtWidgets import QGraphicsScene, QGraphicsView, QApplication, QGraphicsRectItem
 import sys
+import random
 import math
 
 
@@ -73,24 +74,32 @@ class Mandala(randomDraw2):
     def build_design(self):
         self.design_loop_array = []
         self.loop_count = self.get_chosen_loop_count()
-        print('loop count', self.loop_count)
+        # loop_color_set (All Random, Random Random, Every Other Random, All Same, Random Theme, Incremental Theme)
+        self.design_loop_shape_pattern_type = self.get_design_loop_shape_pattern_type()
+        print('loop count', self.loop_count, self.loop_count)
 
         self.design_full_random_colors = True
 
         if self.design_full_random_colors:
-            self.design_loop_array = self.build_loop(self.loop_count, True)
+            self.design_loop_array = self.build_loop(
+                self.loop_count, self.design_loop_shape_pattern_type, True)
         else:
-            self.design_loop_array = self.build_loop(self.loop_count)
+            self.design_loop_array = self.build_loop(
+                self.loop_count, self.design_loop_shape_pattern_type)
 
-    def build_loop(self, loop_count, all_random_colors=False):
+    def build_loop(self, starting_loop_count, design_loop_shape_pattern_type,  all_random_colors=False):
         self.loop_shape_array = []
+        # loop_color_set (All Random, Random Random, Every Other Random, All Same, Random Theme, Incremental Theme)
 
+        # self.loop_shape_pattern_type = self.get_loop_shape_pattern_type(design_loop_shape_pattern_type, loop_count)
+        loop_count = starting_loop_count
         while loop_count > 0:
             print(loop_count)
             loop_object = {}
             loop_object['chosen_loop_radius'] = self.get_chosen_loop_radius()
             loop_object['chosen_loop_blending_mode'] = self.get_chosen_blending_mode()
             loop_object['chosen_shape_count'] = self.get_chosen_shape_count()
+            # loop_object['chosen_shape_type'] = self.get_chosen_loop_shape_type()
             loop_object['chosen_shape_width_offset'] = self.get_chosen_offset()
             loop_object['chosen_shape_height_offset'] = self.get_chosen_offset()
             loop_object['chosen_shape_color_r_offset'] = self.get_chosen_offset()
@@ -100,10 +109,10 @@ class Mandala(randomDraw2):
 
             if all_random_colors:
                 loop_object['shape_array'] = self.build_shape(
-                    loop_object['chosen_shape_count'], all_random_colors)
+                    loop_object['chosen_shape_count'], self.design_loop_shape_pattern_type, (starting_loop_count, loop_count), all_random_colors)
             else:
                 loop_object['shape_array'] = self.build_shape(
-                    loop_object['chosen_shape_count'])
+                    loop_object['chosen_shape_count'], self.design_loop_shape_pattern_type)
             self.loop_shape_array.append(loop_object)
             loop_count -= 1
             # print(loop_object)
@@ -111,20 +120,23 @@ class Mandala(randomDraw2):
         print(len(self.loop_shape_array))
         return self.loop_shape_array
 
-    def build_shape(self, shape_count, all_random_color=False):
+    def build_shape(self, shape_count, shape_design, loop_count_tuple color_choice=False):
+        chosen_shape_type = None
+
         shape_array = []
-        chosen_shape = self.get_chosen_shape()
-        chosen_shape_width = self.get_chosen_dimention(
+        chosen_shape_width = self.get_chosen_dimension(
             self.max_shape_width, self.min_shape_width)
-        chosen_shape_height = self.get_chosen_dimention(
+        chosen_shape_height = self.get_chosen_dimension(
             self.max_shape_height, self.min_shape_height)
         chosen_shape_center = get_shape_center_point(
             chosen_shape_width, chosen_shape_height)
         chosen_shape_rotation_angle = get_shape_rotation_angle(shape_count)
         chosen_shape_color = self.get_chosen_color()
         while shape_count > 0:
+            chosen_shape_type = self.get_chosen_shape_type(
+                shape_design, loop_count_tuple, chosen_shape_type)
             shape_object = {}
-            shape_object['chosen_shape'] = chosen_shape
+            shape_object['chosen_shape'] = chosen_shape_type
             shape_object['chosen_shape_width'] = chosen_shape_width
             shape_object['chosen_shape_height'] = chosen_shape_height
             shape_object['chosen_shape_center'] = chosen_shape_center
@@ -170,13 +182,52 @@ class Mandala(randomDraw2):
 
 # shape utility
 
-    def get_chosen_shape(self):
+
+    def get_design_loop_shape_pattern_type(self):
+        # loop_shape_set (All Random, Random Random, Every Other Random, All Same, Incremental)
+        # self.loop_shape_set =  "All Random"
+        loop_shape_pattern_list = [
+            'all random', 'random random', 'every other random', 'all same', 'incremental']
+        # chosen_loop_shape = random.choice(loop_shape_pattern_list)
+        chosen_loop_shape = 'incremental'
+        return chosen_loop_shape
+    # def get_loop_shape_pattern_type(self, design_pattern, loop_count):
+    #     # loop_shape_set (All Random, Random Random, Every Other Random, All Same, Incremental)
+    #     choice = None
+    #     match design_pattern:
+    #         case "":
+    #             pass
+    #         case _:
+    #             print('out of scope in get_loop_shape_pattern_type in Mandala')
+    #     return choice
+
+    def get_chosen_shape_type(self, shape_design, loop_count_tuple, previous_chosen_shape_type):
         chosen_shape = None
+        max_loop_count = loop_count_tuple[0]
+        cur_loop_count = loop_count_tuple[1]
+    #   SEPARATE THESE
         if self.mandala_type == 'rotating_shapes':
+            # (line, ellipse, circle, rectangle, square)
+            index = get_random(4, 0)
+            # loop_shape_set (All Random, Random Random, Every Other Random, All Same, Incremental)
+            match shape_design:
+                case 'all random':
+                    index = get_random(4, 0)
+                    pass
+                case 'random random':
+                    pass
+                case 'every other random':
+                    pass
+                case 'all same':
+                    pass
+                case 'incremental':
+                    pass
+                case _:
+                    print('out of scope in get_chose_shape in Mandala')
             chosen_shape = 'ellipse'
         return chosen_shape
 
-    def get_chosen_dimention(self, max, min):
+    def get_chosen_dimension(self, max, min):
         # self.max_shape_width = self.focus_radius
         # self.min_shape_width = 10
         # self.max_shape_height = self.focus_radius

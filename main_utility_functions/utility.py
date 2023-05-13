@@ -64,6 +64,8 @@ def get_random_color_theme(color_choice, color_count):
 
 
 def get_random(ceil, floor=1):
+    ceil = int(ceil)
+    floor = int(floor)
     # color_choice (1=random, 2=theme)
     # random_color_count (1=dual, 2=tri, 3=quad, 4=cint)
     return random.randint(floor, ceil)

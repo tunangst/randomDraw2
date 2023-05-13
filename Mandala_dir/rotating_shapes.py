@@ -32,12 +32,19 @@ class Rotating_shapes(Mandala):
         self.current_shape_rotation_angle = 0
 
         self.painter = QPainter(self.canvas)
+        self.painter.begin(self.canvas)
+        # self.painter.setRenderHints(QPainter.HighQualityAntialiasing)
+        # self.painter.setCompositionMode(QPainter.CompositionMode_Multiply)
+
         self.painter.translate(
             self.canvas_center_point[0], self.canvas_center_point[1])
 
         # if self.color_of_loops != 1:
         #     self.shape_color = self.draw_color(self.painter)
         current_loop_number = len(self.design_loop_array) - 1
+        current_loop = self.design_loop_array[current_loop_number]['chosen_loop_blending_mode']
+        self.set_blend_mode(current_loop)
+
         # loop over number of rings
         while current_loop_number >= 0:
             self.painter.save()
@@ -67,6 +74,7 @@ class Rotating_shapes(Mandala):
                 print(current_shape)
                 # if (current_shape['chosen_random_loop_color']):
                 #     pass
+
                 self.draw_color(current_shape)
                 self.draw_shape(
                     current_shape, current_loop['chosen_loop_radius'])
@@ -77,6 +85,15 @@ class Rotating_shapes(Mandala):
             self.painter.restore()
             current_loop_number -= 1
         self.painter.end()
+
+    def set_blend_mode(self, shape):
+        match shape:
+            case 'multiply':
+                # self.painter.compositionMode_Multiply
+                self.painter.setCompositionMode(
+                    QPainter.CompositionMode('Multiply'))
+            case _:
+                print('out of scope in set_blend_mode')
 
     def draw_shape(self, shape, loop_radius):
         shape_center = shape['chosen_shape_center']
