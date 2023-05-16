@@ -1,5 +1,6 @@
 import random
 from main_utility_functions.utility import get_random
+from pprint import pprint
 
 # self.loop_shape_pattern_type = self.get_loop_shape_pattern_type(design_loop_shape_pattern_type, loop_count)
 
@@ -8,7 +9,8 @@ class Mandala:
     def __init__(self):
         self.canvas_width = 5321
         self.canvas_height = 1440
-        self.canvas_center_point = (self.canvas_width / 2, self.canvas_height / 2)
+        self.canvas_center_point = (
+            self.canvas_width / 2, self.canvas_height / 2)
         self.focus_radius = (
             self.canvas_center_point[0]
             if self.canvas_width > self.canvas_height
@@ -26,32 +28,36 @@ class Mandala:
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # (random, same, incremental)
-        loops_design = "random"
+        loops_design = "same"
         # (random, same, incremental)
-        shapes_design = "random"
+        shapes_design = "incremental"
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         design_loop_array = []
         loop_count = get_loop_count(self.max_loop_count, self.min_loop_count)
 
-        print("loop count", loop_count)
+        # print("loop count", loop_count)
 
         self.design_full_random_colors = True
 
-        match loops_design:
-            case "random":
-                self.design_loop_array = self.build_loop(
-                    loop_count, loops_design, shapes_design
-                )
-                pass
-            case "same":
-                # find alternate (all same, random loop, incremental)
-                # (All Random, Random Random, Every Other Random, All Same, Incremental)
-                pass
-            case "incremental":
-                pass
-            case _:
-                print("out of scope in get_chose_shape in Mandala copy")
+        design_loop_array = self.build_loop(
+            loop_count, loops_design, shapes_design
+        )
+        pprint(design_loop_array)
+        # match loops_design:
+        #     case "random":
+        #         self.design_loop_array = self.build_loop(
+        #             loop_count, loops_design, shapes_design
+        #         )
+        #         pass
+        #     case "same":
+        #         # find alternate (all same, random loop, incremental)
+        #         # (All Random, Random Random, Every Other Random, All Same, Incremental)
+        #         pass
+        #     case "incremental":
+        #         pass
+        #     case _:
+        #         print("out of scope in get_chose_shape in Mandala copy")
 
         # else:
         #     self.design_loop_array = self.build_loop(self.loop_count, self.design_loop_shape_pattern_type)
@@ -77,18 +83,19 @@ class Mandala:
         # (random, same, incremental)
         # shapes_design = None
         forced_shape = None
-
+        if loops_design == "same":
+            forced_shape = get_shape_type("random")
         # self.loop_shape_pattern_type = self.get_loop_shape_pattern_type(design_loop_shape_pattern_type, loop_count)
         loop_count = starting_loop_count
         while loop_count > 0:
             loop_object = {}
             loop_count_tuple = (starting_loop_count, loop_count)
 
-            chosen_shape_count = get_shape_count(
-                self.max_shape_count, self.min_shape_count
-            )
-            if loops_design == "same":
-                forced_shape = get_shape_type("random")
+            chosen_shape_count = 10
+            # chosen_shape_count = get_shape_count(
+            #     self.max_shape_count, self.min_shape_count
+            # )
+
             match loops_design:
                 case "random":
                     #   random loop, random shape
@@ -105,14 +112,8 @@ class Mandala:
                     )
                     pass
                 case "same":
-                    forced_shape = get_shape_type("random")
-                    loop_object["shape_array"] = self.build_shape(
-                        loops_design,
-                        chosen_shape_count,
-                        shapes_design,
-                        loop_count_tuple,
-                        forced_shape,
-                    )
+                    if loops_design == "same" and shapes_design == 'random':
+                        forced_shape = get_shape_type("random")
                     #   same loop, random shape
                     #       random shape is chosen on the loop on each loop and loop pushes it to forced shape on shape.
                     #       shape is used for entire loop
@@ -122,8 +123,15 @@ class Mandala:
                     #   same loop, incremental shape
                     #       random shape is chosen on the main loop, each loop will need to send incrementing value and each loop will push it to forced shape on shape
                     #       shape starts at same shape and iterates
-                    pass
+                    loop_object["shape_array"] = self.build_shape(
+                        loops_design,
+                        chosen_shape_count,
+                        shapes_design,
+                        loop_count_tuple,
+                        forced_shape,
+                    )
                 case "incremental":
+                    forced_shape = get_shape_type("random")
                     pass
                 case _:
                     print("out of scope in build loop in Mandala")
@@ -136,7 +144,7 @@ class Mandala:
     def build_shape(
         self, loop_design, shape_count, shape_design, loop_count_tuple, force_shape=None
     ):
-        force_shape = None
+        starting_shape_count = shape_count
         chosen_shape_type = None
         #   random loop, random shape
         #       loop does not store a design
@@ -147,27 +155,40 @@ class Mandala:
         #   random loop, incremental shape
         #       loop does not store a design
         #       shape starts a random shape at the start and chooses the next in line every shape
-        if force_shape == None and shape_design == 'same':
-            chosen_shape_type = get_shape_type(shape_design)
+        if loop_design == 'random' and shape_design == 'same':
+            chosen_shape_type = get_shape_type('random')
+        if loop_design == 'random' and shape_design == 'incremental':
+            chosen_shape_type = get_shape_type('random')
         if loop_design == 'same':
             chosen_shape_type = force_shape
-            
+
         shape_array = []
 
         while shape_count > 0:
+            shape_count_tuple = (starting_shape_count, shape_count)
+
             #
-            if force_shape == None and shape_design == "random":
-                chosen_shape_type = get_shape_type(shape_design, loop_count_tuple, None)
-            if loop_design == 'same' and shape_design == 'incremental':
-                if loop_count_tuple[0] == loop_count_tuple[1]:
+            if loop_design == 'random' and shape_design == "random":
+                chosen_shape_type = get_shape_type(
+                    shape_design, loop_count_tuple, None)
+            if loop_design == 'random' and shape_design == 'incremental':
+                if shape_count_tuple[0] == shape_count_tuple[1]:
                     pass
                 else:
-                    chosen_shape_type get_next_shape(force_shape)
+                    chosen_shape_type = get_shape_type(
+                        shape_design, loop_count_tuple, chosen_shape_type)
+            if loop_design == 'same' and shape_design == 'incremental':
+                if shape_count_tuple[0] == shape_count_tuple[1]:
+                    pass
+                else:
+                    # chosen_shape_type = force_shape if chosen_shape_type == None else None
+                    chosen_shape_type = get_shape_type(
+                        shape_design, loop_count_tuple, chosen_shape_type)
             #
 
             shape_object = {}
             shape_object["chosen_shape"] = chosen_shape_type
-            print(chosen_shape_type)
+            # print(chosen_shape_type)
 
             # define types of color and blending etc
             shape_array.append(shape_object)
@@ -194,7 +215,7 @@ def get_shape_count(max_shape_count, min_shape_count):
 
 
 def get_shape_type(
-    shape_design, loop_count_tuple=None, previous_chosen_shape_type=None
+    shape_design, loop_count_tuple=None, previous_chosen_shape_type=None, forced_shape=None
 ):
     shape_tuple = ("line", "ellipse", "circle", "rectangle", "square")
     chosen_shape = None
@@ -214,14 +235,12 @@ def get_shape_type(
         case "incremental":
             prev_shape_index = shape_tuple.index(previous_chosen_shape_type)
             new_shape_index = prev_shape_index + 1
-            if new_shape_index > len(shape_tuple) -1:
+            if new_shape_index > len(shape_tuple) - 1:
                 new_shape_index = 0
             chosen_shape = shape_tuple[new_shape_index]
         case _:
             print("out of scope in get_chose_shape in Mandala")
     return chosen_shape
 
-def get_next_shape(prev_shape):
-    
 
 test = Mandala()
