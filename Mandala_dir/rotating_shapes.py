@@ -13,7 +13,6 @@ class Rotating_shapes(Mandala):
     def __init__(self):
         super().__init__()
         print('~~~~~ in Rotating_shapes_style ~~~~~~~~')
-        print()
         self.shape_color = None
 
         self.canvas = QtGui.QPixmap(self.canvas_width, self.canvas_height)
@@ -42,8 +41,8 @@ class Rotating_shapes(Mandala):
         # if self.color_of_loops != 1:
         #     self.shape_color = self.draw_color(self.painter)
         current_loop_number = len(self.design_loop_array) - 1
-        current_loop = self.design_loop_array[current_loop_number]['chosen_loop_blending_mode']
-        self.set_blend_mode(current_loop)
+        # current_loop = self.design_loop_array[current_loop_number]['chosen_loop_blending_mode']
+        # self.set_blend_mode(current_loop)
 
         # loop over number of rings
         while current_loop_number >= 0:
@@ -80,7 +79,6 @@ class Rotating_shapes(Mandala):
                     current_shape, current_loop['chosen_loop_radius'])
 
                 self.current_shape_rotation_angle += current_shape['chosen_shape_rotation_angle']
-                print(current_shape)
                 current_shape_number -= 1
             self.painter.restore()
             current_loop_number -= 1
@@ -108,14 +106,29 @@ class Rotating_shapes(Mandala):
         self.painter.translate(-shape_center[0],
                                shape_center[1] - loop_radius)
         # self.painter.translate(-100, -shape['chosen_depth'])
-        self.painter.drawEllipse(
-            0, 0, shape['chosen_shape_width'], shape['chosen_shape_height'])
+
+        self.build_shape_wrapper(shape)
         self.painter.restore()
         # self.painter.drawEllipse(0, 0, 200, 100)
         # self.painter.drawEllipse(
         #     -int(shape['chosen_width']/2), -int(shape['chosen_height']/2), int(shape['chosen_width']/2), int(shape['chosen_height']/2))
         # self.painter.drawEllipse(
         #     0, 0, shape['chosen_width'], shape['chosen_height'])
+
+    def build_shape_wrapper(self, shape):
+        # ("line", "ellipse", "circle", "rectangle", "square")
+        match shape['chosen_shape']:
+            case 'line':
+                self.painter.drawLine(
+                    0, 0, shape['chosen_shape_width'], shape['chosen_shape_height'])
+            case 'ellipse' | 'circle':
+                self.painter.drawEllipse(
+                    0, 0, shape['chosen_shape_width'], shape['chosen_shape_height'])
+            case 'rectangle' | 'square':
+                self.painter.drawRect(
+                    0, 0, shape['chosen_shape_width'], shape['chosen_shape_height'])
+            case _:
+                print('out of scope in rotating_shapes build_shape_wrapper')
 
     def draw_color(self, shape):
         color = shape['chosen_shape_color']

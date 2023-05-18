@@ -10,6 +10,15 @@ import math
 from pprint import pprint
 
 # (random, same, incremental)
+#   random loop, random shape
+#       loop does not store a design
+#       shape chooses a new shape each time
+#   random loop, same shape
+#       loop does not store a design
+#       shape stores a random constant shape
+#   random loop, incremental shape
+#       loop does not store a design
+#       shape starts a random shape at the start and chooses the next in line every shape
 #   same loop, random shape
 #       random shape is chosen on the loop on each loop and loop pushes it to forced shape on shape
 #   same loop, same shape
@@ -55,7 +64,7 @@ class Mandala(randomDraw2):
         # self.loop_color = None
         self.max_stroke = 3
         self.min_stroke = 0
-
+        self.design_loop_array = []
         # self.shape_object_array = []
         # self.number_of_replication_circles = get_random(10, 3)
 
@@ -90,18 +99,17 @@ class Mandala(randomDraw2):
     def build_design(self):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # (random, same, incremental)
-        loops_design = get_design()
+        loops_design = get_design(True)
         # loops_design = "incremental"
         # (random, same, incremental)
-        shapes_design = get_design()
+        shapes_design = get_design(False)
+        print(loops_design, shapes_design)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        self.design_loop_array = []
         loop_count = get_loop_count(self.max_loop_count, self.min_loop_count)
         # loop_color_set (All Random, Random Random, Every Other Random, All Same, Random Theme, Incremental Theme)
         self.design_loop_array = self.build_loop(
             loop_count, loops_design, shapes_design
         )
-        pprint(self.design_loop_array)
 
     def build_loop(self, starting_loop_count, loops_design, shapes_design):
         loop_shape_array = []
@@ -227,7 +235,8 @@ class Mandala(randomDraw2):
             shape_object = {}
             shape_object['chosen_shape'] = chosen_shape_type
             shape_object['chosen_shape_width'] = chosen_shape_width
-            shape_object['chosen_shape_height'] = chosen_shape_height
+            shape_object['chosen_shape_height'] = chosen_shape_height if (
+                chosen_shape_type != 'square' or 'circle') else chosen_shape_width
             shape_object['chosen_shape_center'] = chosen_shape_center
             shape_object['chosen_shape_rotation_angle'] = chosen_shape_rotation_angle
             shape_object['chosen_shape_color'] = chosen_shape_color
@@ -257,9 +266,33 @@ class Mandala(randomDraw2):
         return shape_array
 
 
-def get_design():
+def get_design(type):
+    # loop type == True; shape type == False
     design_tuple = ('random', 'same', 'incremental')
-    return random.choice(design_tuple)
+    choice = None
+    roll = get_random(100)
+    if type:
+      # loop's criteria
+        match roll:
+            case _ if roll < 60:
+                # 60%
+                choice = design_tuple[1]
+            case _ if roll < 85:
+                # 25%
+                choice = design_tuple[2]
+            case _:
+                # 15%
+                choice = design_tuple[0]
+    else:
+        match roll:
+            case _ if roll < 33:
+                choice = design_tuple[0]
+            case _ if roll < 66:
+                choice = design_tuple[1]
+            case _:
+                choice = design_tuple[2]
+
+    return choice
 
 
 def get_loop_count(max, min):
@@ -339,40 +372,41 @@ def get_blending_mode():
     choice = 'none'
     return choice
 
-    # def get_design_array_count(self):
-    #     self.design_loop_array = []
-    #     loop_object = {}
-    #     self.design_full_random_colors = True
-    #     if self.design_full_random_colors == True:
-    #         loop_object = self.build_loop(True)
-    #     pass
 
-    # def get_random_loop_color(self):
-    #     # random_color_shapes 1=All random shape colors, 2.Random random shape colors, 3.Every other random shape colors, 4. No random shape colors
-    #     # 1 will need to get new color every shape build, shape loops object to populate true for having random shape colors
-    #     # 2 will need to add in the shape loops object to see if that will get populated with true or false value for random shape colors
-    #     # 3 will need shape loops function to %2=0 to see if populating true or false
-    #     # 4 will need shape loops to all be false for random shape color
-    #     self.random_color_shapes = 2
-    #     match self.random_color_shapes:
-    #         case 1:
-    #             return True
-    #         case 2:
-    #             toggle = get_random(2)
-    #             if (toggle == 1):
-    #                 return True
-    #             else:
-    #                 return False
-    #         case 3:
-    #             toggle = len(self.shape_object_array) % 2
-    #             print(toggle, ' toggle')
-    #             if (toggle == 0):
-    #                 return True
-    #             else:
-    #                 return False
-    #         case 4:
-    #             return False
-    #         case _:
-    #             print('out of scope in get_random_loop_color')
-    # # def get_chosen_loop_color(self):
-    # #     return get_random_theme_color(self.color_theme)
+# def get_design_array_count(self):
+#     self.design_loop_array = []
+#     loop_object = {}
+#     self.design_full_random_colors = True
+#     if self.design_full_random_colors == True:
+#         loop_object = self.build_loop(True)
+#     pass
+
+# def get_random_loop_color(self):
+#     # random_color_shapes 1=All random shape colors, 2.Random random shape colors, 3.Every other random shape colors, 4. No random shape colors
+#     # 1 will need to get new color every shape build, shape loops object to populate true for having random shape colors
+#     # 2 will need to add in the shape loops object to see if that will get populated with true or false value for random shape colors
+#     # 3 will need shape loops function to %2=0 to see if populating true or false
+#     # 4 will need shape loops to all be false for random shape color
+#     self.random_color_shapes = 2
+#     match self.random_color_shapes:
+#         case 1:
+#             return True
+#         case 2:
+#             toggle = get_random(2)
+#             if (toggle == 1):
+#                 return True
+#             else:
+#                 return False
+#         case 3:
+#             toggle = len(self.shape_object_array) % 2
+#             print(toggle, ' toggle')
+#             if (toggle == 0):
+#                 return True
+#             else:
+#                 return False
+#         case 4:
+#             return False
+#         case _:
+#             print('out of scope in get_random_loop_color')
+# # def get_chosen_loop_color(self):
+# #     return get_random_theme_color(self.color_theme)
