@@ -274,21 +274,24 @@ def get_design(type):
     if type:
       # loop's criteria
         match roll:
-            case _ if roll < 60:
-                # 60%
+            case _ if roll < 98:
+                # 98% same
                 choice = design_tuple[1]
-            case _ if roll < 85:
-                # 25%
+            case _ if roll < 99:
+                # 1% incremental
                 choice = design_tuple[2]
             case _:
-                # 15%
+                # 1% random
                 choice = design_tuple[0]
     else:
         match roll:
-            case _ if roll < 33:
-                choice = design_tuple[0]
-            case _ if roll < 66:
+            case _ if roll < 48:
+                # 48% same
                 choice = design_tuple[1]
+            case _ if roll < 96:
+                # 48% random
+                choice = design_tuple[0]
+                # 2% incremental
             case _:
                 choice = design_tuple[2]
 
