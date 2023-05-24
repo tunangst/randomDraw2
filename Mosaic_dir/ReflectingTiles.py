@@ -1,11 +1,12 @@
 from Mosaic_dir.Mosaic import Mosaic
 from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.QtCore import Qt
-from main_utility_functions.utility import get_shape_center_point, get_shape_center_rotation_point, get_random_theme_color, get_random_rgb_color, get_chosen_theme_color
+from main_utility_functions.utility import get_shape_center_point, get_shape_center_rotation_point, get_random_theme_color, get_random_rgb_color, get_random_color_theme, get_chosen_theme_color, get_random
 from PyQt6.QtGui import QBrush, QPen, QTransform, QPainter
 from PyQt6.QtWidgets import QGraphicsScene, QGraphicsView, QApplication, QGraphicsRectItem, QGraphicsRotation, QGraphicsEllipseItem, QWidget, QLabel, QVBoxLayout
 import sys
 import math
+import random
 from pprint import pprint
 
 
@@ -78,7 +79,11 @@ class ReflectingTiles():
 
         # self.tile_pattern.drawRect(
         #     0, 0, 10, 10)
-        self.draw_template()
+        tile_matrix = self.draw_template()
+        # pprint(tile_matrix[0][0])
+        template_tile = tile_matrix[0][0]['box_matrix']
+        color_template = self.color_template(template_tile)
+        print(color_template)
         # self.tile_pattern.end()
 
         # self.painter = QPainter(self.canvas)
@@ -121,8 +126,8 @@ class ReflectingTiles():
             while tile_x > 0:
                 starting_tuple = (starting_tile_x_pos, starting_tile_y_pos)
                 ending_tuple = (ending_tile_x_pos, ending_tile_y_pos)
-                print(starting_tuple)
-                print(ending_tuple)
+                # print(starting_tuple)
+                # print(ending_tuple)
                 tile_object = self.build_tile(
                     tile_index, starting_tuple, ending_tuple)
                 starting_tile_x_pos += self.tile_width
@@ -136,7 +141,8 @@ class ReflectingTiles():
             ending_tile_y_pos += self.tile_height
             tile_y -= 1
 
-        pprint(tile_matrix)
+        # pprint(tile_matrix)
+        return tile_matrix
 
     def build_tile(self, index, start, end):
         box_x = self.number_of_horizontal_boxes
@@ -163,8 +169,8 @@ class ReflectingTiles():
                 box['start_y'] = start_y
                 box['end_x'] = end_x
                 box['end_y'] = end_y
-                print(start_x, start_y)
-                print(end_x, end_y)
+                # print(start_x, start_y)
+                # print(end_x, end_y)
 
                 start_x += self.box_width
                 end_x += self.box_width if end_x <= end[0] else 0
@@ -176,6 +182,52 @@ class ReflectingTiles():
             end_y += self.box_height
             box_y -= 1
         return tile_obj
+
+    def color_template(self, tile_matrix):
+        self.color_count = 5
+        self.color_theme = get_random_color_theme(
+            2, self.color_count
+        )
+        chosen_colors = get_colors_array(
+            self.color_count, self.color_theme)
+        template = tile_matrix
+        for y in template:
+            for x in y:
+                del x['start_x']
+                del x['start_y']
+                del x['end_x']
+                del x['end_y']
+
+                # self.color_count
+                # random_color_count (2=dual, 3=tri, 4=quad, 5=penta, 6=all random)
+                # self.color_theme
+                # hardcoding this until I fix it in randomDraw module
+
+                x['color'] = random.choice(chosen_colors)
+                print(x)
+        return template
+
+
+def get_colors_array(count, theme):
+    color_index_array = build_color_index_array(count)
+    selected_colors = []
+    while count > 0:
+        roll = get_random(count - 1, 0)
+        # get index of roll in array and remove from array
+        chosen_color = color_index_array.pop(roll)
+        # set color with index
+        selected_colors.append(theme[chosen_color])
+        count -= 1
+    return selected_colors
+
+
+def build_color_index_array(count):
+    index_array = []
+    count_index = count - 1
+    while count_index >= 0:
+        index_array.insert(0, count_index)
+        count_index -= 1
+    return index_array
 
 
 test = ReflectingTiles()
