@@ -127,4 +127,4 @@ class ReflectingTiles(Mosaic):
         pprint(box_matrix)
 
 
-test = ReflectingTiles()
+# test = ReflectingTiles()

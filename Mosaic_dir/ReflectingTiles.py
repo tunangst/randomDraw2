@@ -11,11 +11,11 @@ from copy import copy, deepcopy
 from pprint import pprint
 
 
-class ReflectingTiles():
+class ReflectingTiles(Mosaic):
     def __init__(self):
         super().__init__()
-        self.canvas_width = 40
-        self.canvas_height = 40
+        # self.canvas_width = 40
+        # self.canvas_height = 40
         print('~~~~~ in ReflectingTiles ~~~~~~~~')
         self.shape_color = None
 
@@ -33,8 +33,8 @@ class ReflectingTiles():
 
         self.number_of_horizontal_tiles = 2
         self.number_of_vertical_tiles = 2
-        self.number_of_horizontal_boxes = 2
-        self.number_of_vertical_boxes = 2
+        self.number_of_horizontal_boxes = 20
+        self.number_of_vertical_boxes = 10
         # don't let boxes exceed width/height
         # don't let tiles exceed self.canvas_width/height/2
 
@@ -54,42 +54,37 @@ class ReflectingTiles():
 
         self.tiles_left = self.number_of_horizontal_tiles * self.number_of_vertical_tiles
 
-        # self.canvas = QtGui.QPixmap(self.canvas_width, self.canvas_height)
-        # self.canvas.fill(QtGui.QColor("white"))
-        # self.tile_canvas = QtGui.QPixmap(self.tile_width, self.tile_height)
+        self.canvas = QtGui.QPixmap(self.canvas_width, self.canvas_height)
+        self.canvas.fill(QtGui.QColor("white"))
         self.start()
 
-        # self.label = QLabel()
-        # self.label.setPixmap(self.canvas)
-        # self.label.setGeometry(0, 0, self.canvas_width, self.canvas_height)
-        # self.label.setWindowTitle('Reflecting Tiles')
-        # self.label.show()
+        self.label = QLabel()
+        self.label.setPixmap(self.canvas)
+        self.label.setGeometry(0, 0, self.canvas_width, self.canvas_height)
+        self.label.setWindowTitle('Reflecting Tiles')
+        self.label.show()
 
     def start(self):
-        # start at 0,0
-        # create pattern
-        #   loop self.tiles_left
-
-        # self.tile_pattern = QPainter(self.tile_canvas)
-        # self.tile_pattern.begin(self.tile_canvas)
-
-        # pen = QtGui.QPen()
-        # pen.setWidth(5)
-        # pen.setColor(QtGui.QColor('blue'))
-        # self.tile_pattern.setPen(pen)
-
-        # self.tile_pattern.drawRect(
-        #     0, 0, 10, 10)
         self.tile_matrix = self.draw_template()
         # pprint(tile_matrix[0][0])
         template_tile = self.tile_matrix[0][0]['box_matrix']
         self.color_template = self.color_template(template_tile)
         print(self.color_template)
-        self.color_tiles()
-        # self.tile_pattern.end()
+        self.set_tile_colors()
+        # start at 0,0
+        # create pattern
+        #   loop self.tiles_left
 
-        # self.painter = QPainter(self.canvas)
-        # self.painter.begin(self.canvas)
+        self.painter = QPainter(self.canvas)
+
+        stroke = QtGui.QPen()
+        stroke.setWidth(3)
+        stroke.setColor(QtGui.QColor('white'))
+        self.painter.setPen(stroke)
+
+        self.painter.begin(self.canvas)
+        self.draw_tiles()
+        self.painter.end()
 
         # self.painter.translate(
         #     self.canvas_center_point[0], self.canvas_center_point[1])
@@ -167,10 +162,10 @@ class ReflectingTiles():
             while box_x > 0:
                 box = {}
                 box['color'] = 'green'
-                box['start_x'] = start_x
-                box['start_y'] = start_y
-                box['end_x'] = end_x
-                box['end_y'] = end_y
+                box['start_x'] = int(start_x)
+                box['start_y'] = int(start_y)
+                box['end_x'] = int(end_x)
+                box['end_y'] = int(end_y)
                 # print(start_x, start_y)
                 # print(end_x, end_y)
 
@@ -209,7 +204,7 @@ class ReflectingTiles():
                 print(x)
         return template
 
-    def color_tiles(self):
+    def set_tile_colors(self):
         # self.color_template
         # self.tile_matrix
         design_type = 'clone'
@@ -220,10 +215,11 @@ class ReflectingTiles():
                 # new tile, find what design type to use, all clone in this case
                 for idx_y, tile_y in enumerate(tiles_x['box_matrix']):
                     for idx_x, box in enumerate(tile_y):
-                        print(idx_y, idx_x)
-                        pprint(box['color'])
-                        print(self.color_template[idx_y][idx_x]['color'])
-                        self.color_design(design_type, idx_y, idx_x)
+                        # print(idx_y, idx_x)
+                        # pprint(box['color'])
+                        # print(self.color_template[idx_y][idx_x]['color'])
+                        box['color'] = self.color_design(
+                            design_type, idx_y, idx_x)
 
     def color_design(self, design_type, y, x):
         color_template_clone = deepcopy(self.color_template)
@@ -248,8 +244,29 @@ class ReflectingTiles():
                 transform_x = y
             case _:
                 print('out of scope in color_design in reflecting tiles')
-        color_result = color_template_clone[y][x]
+        color_result = color_template_clone[transform_y][transform_x]['color']
         return color_result
+
+    def draw_tiles(self):
+        for tiles_y in self.tile_matrix:
+            for tiles_x in tiles_y:
+                tile_number = tiles_x['index']
+                # new tile, find what design type to use, all clone in this case
+                for idx_y, tile_y in enumerate(tiles_x['box_matrix']):
+                    for idx_x, box in enumerate(tile_y):
+                        print(idx_y, idx_x)
+                        color = box['color']
+                        r = color['r']
+                        g = color['g']
+                        b = color['b']
+                        # print(self.color_template[idx_y][idx_x]['color'])
+                        pprint(box)
+                        brush = QtGui.QBrush()
+                        brush.setColor(QtGui.QColor(r, g, b))
+                        brush.setStyle(Qt.BrushStyle.SolidPattern)
+                        self.painter.setBrush(brush)
+                        self.painter.drawRect(
+                            box['start_x'], box['start_y'], box['end_x'], box['end_y'])
 
 
 def get_colors_array(count, theme):
@@ -274,4 +291,4 @@ def build_color_index_array(count):
     return index_array
 
 
-test = ReflectingTiles()
+# test = ReflectingTiles()
