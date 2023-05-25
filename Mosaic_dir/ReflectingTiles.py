@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import QGraphicsScene, QGraphicsView, QApplication, QGraphi
 import sys
 import math
 import random
+from copy import copy, deepcopy
 from pprint import pprint
 
 
@@ -79,11 +80,12 @@ class ReflectingTiles():
 
         # self.tile_pattern.drawRect(
         #     0, 0, 10, 10)
-        tile_matrix = self.draw_template()
+        self.tile_matrix = self.draw_template()
         # pprint(tile_matrix[0][0])
-        template_tile = tile_matrix[0][0]['box_matrix']
-        color_template = self.color_template(template_tile)
-        print(color_template)
+        template_tile = self.tile_matrix[0][0]['box_matrix']
+        self.color_template = self.color_template(template_tile)
+        print(self.color_template)
+        self.color_tiles()
         # self.tile_pattern.end()
 
         # self.painter = QPainter(self.canvas)
@@ -190,7 +192,7 @@ class ReflectingTiles():
         )
         chosen_colors = get_colors_array(
             self.color_count, self.color_theme)
-        template = tile_matrix
+        template = deepcopy(tile_matrix)
         for y in template:
             for x in y:
                 del x['start_x']
@@ -206,6 +208,48 @@ class ReflectingTiles():
                 x['color'] = random.choice(chosen_colors)
                 print(x)
         return template
+
+    def color_tiles(self):
+        # self.color_template
+        # self.tile_matrix
+        design_type = 'clone'
+
+        for tiles_y in self.tile_matrix:
+            for tiles_x in tiles_y:
+                tile_number = tiles_x['index']
+                # new tile, find what design type to use, all clone in this case
+                for idx_y, tile_y in enumerate(tiles_x['box_matrix']):
+                    for idx_x, box in enumerate(tile_y):
+                        print(idx_y, idx_x)
+                        pprint(box['color'])
+                        print(self.color_template[idx_y][idx_x]['color'])
+                        self.color_design(design_type, idx_y, idx_x)
+
+    def color_design(self, design_type, y, x):
+        color_template_clone = deepcopy(self.color_template)
+        color_result = None
+        transform_x = None
+        transform_y = None
+        match design_type:
+            case 'clone':
+                transform_y = y
+                transform_x = x
+            case 'reflect_horizontal':
+                transform_y = y
+                transform_x = (len(x)-1)-x
+            case 'reflect_vertical':
+                transform_y = (len(y)-1)-y
+                transform_x = x
+            case 'rotate_right':
+                transform_y = x
+                transform_x = (len(x)-1)-y
+            case 'rotate_left':
+                transform_y = (len(y)-1)-x
+                transform_x = y
+            case _:
+                print('out of scope in color_design in reflecting tiles')
+        color_result = color_template_clone[y][x]
+        return color_result
 
 
 def get_colors_array(count, theme):
