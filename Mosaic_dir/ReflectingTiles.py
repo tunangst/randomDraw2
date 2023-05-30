@@ -33,8 +33,8 @@ class ReflectingTiles(Mosaic):
 
         self.number_of_horizontal_tiles = 2
         self.number_of_vertical_tiles = 2
-        self.number_of_horizontal_boxes = 20
-        self.number_of_vertical_boxes = 10
+        self.number_of_horizontal_boxes = 5
+        self.number_of_vertical_boxes = 5
         # don't let boxes exceed width/height
         # don't let tiles exceed self.canvas_width/height/2
 
@@ -44,8 +44,8 @@ class ReflectingTiles(Mosaic):
 
         self.tile_width = self.canvas_width / self.number_of_horizontal_tiles
         self.tile_height = self.canvas_height / self.number_of_vertical_tiles
-        self.box_width = self.tile_width / self.number_of_horizontal_tiles
-        self.box_height = self.tile_height / self.number_of_vertical_tiles
+        self.box_width = self.tile_width / self.number_of_horizontal_boxes
+        self.box_height = self.tile_height / self.number_of_vertical_boxes
         # print(self.tile_width, self.tile_height,
         #       self.box_width, self.box_height)
 
@@ -208,40 +208,128 @@ class ReflectingTiles(Mosaic):
         # self.color_template
         # self.tile_matrix
         design_type = 'clone'
+        submit_design = design_type
+        temp_pattern = {}
+        # design_type:
+        #   clone,
+        #   ref_ver, ref_hor, ref_all,
+        #   rot_row_(r/l), rot_col_(r/l), rot_row_(r/l)_rot_col_(r/l),
+        #   rot_(r/l)_ref_(r/l), ref_(r/l)_rot_(r/l) [first is even, second is odd]
 
-        for tiles_y in self.tile_matrix:
-            for tiles_x in tiles_y:
+        for tile_idx_y, tiles_y in enumerate(self.tile_matrix):
+            print(tile_idx_y)
+            # set 0,0 value
+            temp_pattern = deepcopy(self.color_template)
+            for tile_idx_x, tiles_x in enumerate(tiles_y):
+                print(tile_idx_x)
                 tile_number = tiles_x['index']
-                # new tile, find what design type to use, all clone in this case
-                for idx_y, tile_y in enumerate(tiles_x['box_matrix']):
-                    for idx_x, box in enumerate(tile_y):
-                        # print(idx_y, idx_x)
-                        # pprint(box['color'])
-                        # print(self.color_template[idx_y][idx_x]['color'])
-                        box['color'] = self.color_design(
-                            design_type, idx_y, idx_x)
 
-    def color_design(self, design_type, y, x):
+                # new tile, find what design type to use, all clone in this case
+                for box_idx_y, tile_y in enumerate(tiles_x['box_matrix']):
+
+                    for box_idx_x, box in enumerate(tile_y):
+                        # currently just clones the pattern for each box, need to decide how to split them up to look reflected
+                        # print(self.color_design('clone', box_idx_y, box_idx_x))
+                        # print(self.color_design(
+                        #     'clone', box_idx_y, box_idx_x))
+
+                        if tile_idx_y == 0 and tile_idx_x == 0:
+                            # 0,0 is always a clone
+                            submit_design = 'clone'
+                        else:
+                            match design_type:
+                                case 'clone':
+                                    submit_design = 'clone'
+                                case 'ref_ver':
+                                    # if x even: clone
+                                    # if x odd: reflect_vertical
+                                    if tile_idx_x % 2 == 0:
+                                        submit_design = 'clone'
+                                    else:
+                                        submit_design = 'reflect_vertical'
+                                case 'ref_hor':
+                                    # if y even: clone
+                                    # if y odd: reflect_horizontal
+                                    if tile_idx_y % 2 == 0:
+                                        submit_design = 'clone'
+                                    else:
+                                        submit_design = 'reflect_horizontal'
+                                case 'ref_all':
+                                    # if y even:
+                                    #   if x even: clone
+                                    #   if x odd: reflect_vertical
+                                    # if y odd:
+                                    #   if x even: reflect_horizontal
+                                    #   if x odd: reflect_vertical, reflect_horizontal
+                                    pass
+                                case 'rot_row_r':
+                                    # if x = 0: clone
+                                    # rotate right index times
+                                    rot_count = get_pattern_transform_count(
+                                        tile_idx_x)
+                                    while rot_count > 0:
+                                        temp_pattern = self.color_design(
+                                            temp_pattern, box_idx_y, box_idx_x, tile_idx_y, tile_idx_x)
+                                        rot_count -= 1
+
+                                case 'rot_row_l':
+                                    pass
+                                case 'rot_col_r':
+                                    pass
+                                case 'rot_col_l':
+                                    pass
+                                case 'rot_row_r_rot_col_r':
+                                    pass
+                                case 'rot_row_r_rot_col_l':
+                                    pass
+                                case 'rot_row_l_rot_col_r':
+                                    pass
+                                case 'rot_row_l_rot_col_l':
+                                    pass
+                                case 'rot_r_ref_r':
+                                    pass
+                                case 'rot_r_ref_l':
+                                    pass
+                                case 'ref_l_rot_r':
+                                    pass
+                                case 'ref_l_rot_l':
+                                    pass
+                                case _:
+                                    pass
+
+                        box['color'] = self.color_design(
+                            temp_pattern, box_idx_y, box_idx_x, tile_idx_y, tile_idx_x)
+
+    def color_design(self, design, box_y, box_x, tile_y, tile_x):
+        # design_type:
+        #   clone,
+        #   ref_ver, ref_hor, ref_all,
+        #   rot_row_(r/l), rot_col_(r/l), rot_row_(r/l)_rot_col_(r/l),
+        #   rot_(r/l)_ref_(r/l), ref_(r/l)_rot_(r/l) [first is even, second is odd]
         color_template_clone = deepcopy(self.color_template)
         color_result = None
         transform_x = None
         transform_y = None
-        match design_type:
+        match design:
             case 'clone':
-                transform_y = y
-                transform_x = x
+                transform_y = box_y
+                transform_x = box_x
             case 'reflect_horizontal':
-                transform_y = y
-                transform_x = (len(x)-1)-x
+                transform_y = box_y
+                transform_x = self.number_of_horizontal_boxes - 1 - box_x
+                # transform_x = (len(x)-1)-x
             case 'reflect_vertical':
-                transform_y = (len(y)-1)-y
-                transform_x = x
+                # transform_y = (len(y)-1)-y
+                transform_y = self.number_of_vertical_boxes - 1 - box_y
+                transform_x = box_x
             case 'rotate_right':
-                transform_y = x
-                transform_x = (len(x)-1)-y
+                transform_y = box_x
+                transform_x = self.number_of_horizontal_boxes - 1 - box_y
+                # transform_x = (len(x)-1)-y
             case 'rotate_left':
-                transform_y = (len(y)-1)-x
-                transform_x = y
+                # transform_y = (len(y)-1)-x
+                transform_y = self.number_of_vertical_boxes - 1 - box_x
+                transform_x = box_y
             case _:
                 print('out of scope in color_design in reflecting tiles')
         color_result = color_template_clone[transform_y][transform_x]['color']
@@ -289,6 +377,21 @@ def build_color_index_array(count):
         index_array.insert(0, count_index)
         count_index -= 1
     return index_array
+
+
+def get_pattern_transform_count(idx):
+    choice = idx / 4
+    returned_choice = 0
+    match choice:
+        case 0:
+            returned_choice = 0
+        case .25:
+            returned_choice = 1
+        case .50:
+            return_choice = 2
+        case .75:
+            return_choice = 3
+    return returned_choice
 
 
 # test = ReflectingTiles()
