@@ -261,19 +261,43 @@ class ReflectingTiles(Mosaic):
                                     # if y odd:
                                     #   if x even: reflect_horizontal
                                     #   if x odd: reflect_vertical, reflect_horizontal
+                                    if is_even(tile_idx_y):
+                                        if is_even(tile_idx_x):
+                                            submit_design = 'clone'
+                                        else:
+                                            submit_design = 'reflect_vertical'
+                                    else:
+                                        if is_even(tile_idx_x):
+                                            submit_design = 'reflect_horizontal'
+                                        else:
+                                            submit_design = 'reflect_vertical'
+                                            temp_pattern = self.color_design(
+                                                temp_pattern, submit_design, box_idx_y, box_idx_x, tile_idx_y, tile_idx_x)
+                                            submit_design = 'reflect_horizontal'
+
                                     pass
                                 case 'rot_row_r':
                                     # if x = 0: clone
                                     # rotate right index times
+                                    submit_design = 'rotate_right'
                                     rot_count = get_pattern_transform_count(
                                         tile_idx_x)
                                     while rot_count > 0:
                                         temp_pattern = self.color_design(
-                                            temp_pattern, box_idx_y, box_idx_x, tile_idx_y, tile_idx_x)
+                                            temp_pattern, submit_design, box_idx_y, box_idx_x, tile_idx_y, tile_idx_x)
                                         rot_count -= 1
 
                                 case 'rot_row_l':
-                                    pass
+                                    # if x = 0: clone
+                                    # rotate left index times
+                                    submit_design = 'rotate_left'
+                                    rot_count = get_pattern_transform_count(
+                                        tile_idx_x)
+                                    while rot_count > 0:
+                                        temp_pattern = self.color_design(
+                                            temp_pattern, submit_design, box_idx_y, box_idx_x, tile_idx_y, tile_idx_x)
+                                        rot_count -= 1
+
                                 case 'rot_col_r':
                                     pass
                                 case 'rot_col_l':
@@ -300,13 +324,14 @@ class ReflectingTiles(Mosaic):
                         box['color'] = self.color_design(
                             temp_pattern, box_idx_y, box_idx_x, tile_idx_y, tile_idx_x)
 
-    def color_design(self, design, box_y, box_x, tile_y, tile_x):
+    def color_design(self, pattern, design, box_y, box_x, tile_y, tile_x):
         # design_type:
         #   clone,
         #   ref_ver, ref_hor, ref_all,
         #   rot_row_(r/l), rot_col_(r/l), rot_row_(r/l)_rot_col_(r/l),
         #   rot_(r/l)_ref_(r/l), ref_(r/l)_rot_(r/l) [first is even, second is odd]
-        color_template_clone = deepcopy(self.color_template)
+
+        color_template_clone = deepcopy(pattern)
         color_result = None
         transform_x = None
         transform_y = None
@@ -393,5 +418,14 @@ def get_pattern_transform_count(idx):
             return_choice = 3
     return returned_choice
 
+
+def is_even(num):
+    calc = num % 2
+    answer = None
+    if calc == 0:
+        answer = True
+    else:
+        answer = False
+    return answer
 
 # test = ReflectingTiles()
