@@ -1,7 +1,9 @@
 import sys
 from pprint import pprint
 from Form_dir.main_form import Main_Form
-from Mandala_dir.rotating_shapes import Rotating_shapes
+from RotatingShapes_dir.RotatingShapesPainter import RotatingShapesPainter
+from TestBlends_dir.TestBlends import TestBlends
+
 # from randomDraw2 import randomDraw2
 from Mosaic_dir.Squares import Square
 from Mosaic_dir.ReflectingTiles import ReflectingTiles
@@ -17,8 +19,14 @@ from PyQt6.QtWidgets import (
     QRadioButton,
     QVBoxLayout,
     QHBoxLayout,
-    QWidget
+    QWidget,
 )
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ class variables ~~~~~~~~~~~~~~~~~~~~
+# self.form_window
+# self.canvas_window
+# self.design
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ class variables ~~~~~~~~~~~~~~~~~~~~
 
 
 class app(QMainWindow):
@@ -32,24 +40,16 @@ class app(QMainWindow):
     def start(self):
         self.form_window = Main_Form(parent=self)
         self.design = self.form_window.design_dropdown_value
-
-        self.canvas_window = self.build_shape_class(5)
-        # self.canvas_window = Square(self.form_window.canvas_width,
-        #                             self.form_window.canvas_height,
-        #                             self.form_window.design_dropdown_value,
-        #                             self.form_window.color_choice_index,
-        #                             self.form_window.color_count_index)
+        self.canvas_window = self.choose_program(5)
         self.form_window.show()
-        # self.canvas_window.show()
 
     def refresh_received(self):
-        self.canvas_window = self.build_shape_class(5)
-        # print(self.canvas_window.__dict__)
-        print('refreshed')
+        self.canvas_window = self.choose_program(5)
+        print("refreshed")
 
-    def build_shape_class(self, design_number):
-        # DESIGN (1=random, 2=square, 3=rectangle, 4=scales, 5=mandala)
-        design_number = 6
+    def choose_program(self, design_number):
+        # DESIGN (1=random, 2=square, 3=rectangle, 4=scales, 5=rotating shapes)
+        design_number = 5
         match design_number:
             # case 2:
             #     return Square(
@@ -59,17 +59,17 @@ class app(QMainWindow):
             #         self.form_window.color_choice_index,
             #         self.form_window.color_count_index
             #     )
-            # case 5:
-            #     return Rotating_shapes()
+            case 5:
+                return RotatingShapesPainter()
             # case 6:
             #     return ReflectingTiles()
+            case 7:
+                return TestBlends()
             case _:
-                print('out of scope')
+                print("out of scope")
                 return ReflectingTiles()
 
 
 run_app = QApplication(sys.argv)
-
 start_window = app()
-
 sys.exit(run_app.exec())

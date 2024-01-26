@@ -1,18 +1,42 @@
-from main_utility_functions.utility import get_shape_center_point, get_shape_center_rotation_point, get_random_theme_color, get_random_rgb_color, get_chosen_theme_color
-from Mandala_dir.Mandala import Mandala
+from main_utility_functions.utility import (
+    get_shape_center_point,
+    get_shape_center_rotation_point,
+    get_random_theme_color,
+    get_random_rgb_color,
+    get_chosen_theme_color,
+)
+from RotatingShapes_dir.RotatingShapesBase import RotatingShapesBase
 from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.QtCore import Qt, QPointF
 from PyQt6.QtGui import QBrush, QPen, QTransform, QPainter
-from PyQt6.QtWidgets import QGraphicsScene, QGraphicsView, QApplication, QGraphicsRectItem, QGraphicsRotation, QGraphicsEllipseItem, QWidget, QLabel, QVBoxLayout
+from PyQt6.QtWidgets import (
+    QGraphicsScene,
+    QGraphicsView,
+    QApplication,
+    QGraphicsRectItem,
+    QGraphicsRotation,
+    QGraphicsEllipseItem,
+    QWidget,
+    QLabel,
+    QVBoxLayout,
+)
 import sys
 import math
 from pprint import pprint
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ class variables ~~~~~~~~~~~~~~~~~~~~
+# self.shape_color
+# self.canvas
+# self.label
+# self.painter
+# self.current_shape_rotation_angle
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ class variables ~~~~~~~~~~~~~~~~~~~~
 
-class Rotating_shapes(Mandala):
+
+class RotatingShapesPainter(RotatingShapesBase):
     def __init__(self):
         super().__init__()
-        print('~~~~~ in Rotating_shapes_style ~~~~~~~~')
+        print("~~~~~ in Rotatingshapes ~~~~~~~~")
         self.shape_color = None
 
         self.canvas = QtGui.QPixmap(self.canvas_width, self.canvas_height)
@@ -22,7 +46,7 @@ class Rotating_shapes(Mandala):
         self.label = QLabel()
         self.label.setPixmap(self.canvas)
         self.label.setGeometry(0, 0, self.canvas_width, self.canvas_height)
-        self.label.setWindowTitle('Rotating Shapes')
+        self.label.setWindowTitle("Rotating Shapes")
         self.label.show()
 
     def start(self):
@@ -35,8 +59,7 @@ class Rotating_shapes(Mandala):
         # self.painter.setRenderHints(QPainter.HighQualityAntialiasing)
         # self.painter.setCompositionMode(QPainter.CompositionMode_Multiply)
 
-        self.painter.translate(
-            self.canvas_center_point[0], self.canvas_center_point[1])
+        self.painter.translate(self.canvas_center_point[0], self.canvas_center_point[1])
 
         # if self.color_of_loops != 1:
         #     self.shape_color = self.draw_color(self.painter)
@@ -47,7 +70,7 @@ class Rotating_shapes(Mandala):
         # loop over number of rings
         while current_loop_number >= 0:
             self.painter.save()
-            print('current loop number', current_loop_number)
+            print("current loop number", current_loop_number)
             current_loop = self.design_loop_array[current_loop_number]
             # while self.number_of_replication_circles > 0:
             # translate the canvas to middle of screen and save
@@ -65,46 +88,46 @@ class Rotating_shapes(Mandala):
             # self.shape_center = get_shape_center_point(
             #     shape['chosen_width'], shape['chosen_height'])
 
-            current_shape_number = len(
-                current_loop['shape_array']) - 1
+            current_shape_number = len(current_loop["shape_array"]) - 1
             while current_shape_number >= 0:
-                print('current shape number', current_shape_number)
-                current_shape = current_loop['shape_array'][current_shape_number]
-                print(current_shape)
+                print("current shape number", current_shape_number)
+                current_shape = current_loop["shape_array"][current_shape_number]
+                print(current_shape["chosen_shape"])
                 # if (current_shape['chosen_random_loop_color']):
                 #     pass
-
+                self.set_blend_mode(current_loop["chosen_loop_blending_mode"])
                 self.draw_color(current_shape)
-                self.draw_shape(
-                    current_shape, current_loop['chosen_loop_radius'])
+                self.draw_shape(current_shape, current_loop["chosen_loop_radius"])
 
-                self.current_shape_rotation_angle += current_shape['chosen_shape_rotation_angle']
+                self.current_shape_rotation_angle += current_shape[
+                    "chosen_shape_rotation_angle"
+                ]
                 current_shape_number -= 1
             self.painter.restore()
             current_loop_number -= 1
         self.painter.end()
 
-    def set_blend_mode(self, shape):
-        match shape:
-            case 'multiply':
+    def set_blend_mode(self, blendMode):
+        match blendMode:
+            case "multiply":
                 # self.painter.compositionMode_Multiply
                 self.painter.setCompositionMode(
-                    QPainter.CompositionMode('Multiply'))
+                    QPainter.CompositionMode.CompositionMode_Multiply
+                )
             case _:
-                print('out of scope in set_blend_mode')
+                print("out of scope in set_blend_mode")
 
     def draw_shape(self, shape, loop_radius):
-        shape_center = shape['chosen_shape_center']
+        shape_center = shape["chosen_shape_center"]
 
         pen = QtGui.QPen()
         pen.setWidth(5)
-        pen.setColor(QtGui.QColor('blue'))
+        pen.setColor(QtGui.QColor("blue"))
         self.painter.setPen(pen)
 
         self.painter.save()
         self.painter.rotate(self.current_shape_rotation_angle)
-        self.painter.translate(-shape_center[0],
-                               shape_center[1] - loop_radius)
+        self.painter.translate(-shape_center[0], shape_center[1] - loop_radius)
         # self.painter.translate(-100, -shape['chosen_depth'])
 
         self.build_shape_wrapper(shape)
@@ -117,21 +140,24 @@ class Rotating_shapes(Mandala):
 
     def build_shape_wrapper(self, shape):
         # ("line", "ellipse", "circle", "rectangle", "square")
-        match shape['chosen_shape']:
-            case 'line':
+        match shape["chosen_shape"]:
+            case "line":
                 self.painter.drawLine(
-                    0, 0, shape['chosen_shape_width'], shape['chosen_shape_height'])
-            case 'ellipse' | 'circle':
+                    0, 0, shape["chosen_shape_width"], shape["chosen_shape_height"]
+                )
+            case "ellipse" | "circle":
                 self.painter.drawEllipse(
-                    0, 0, shape['chosen_shape_width'], shape['chosen_shape_height'])
-            case 'rectangle' | 'square':
+                    0, 0, shape["chosen_shape_width"], shape["chosen_shape_height"]
+                )
+            case "rectangle" | "square":
                 self.painter.drawRect(
-                    0, 0, shape['chosen_shape_width'], shape['chosen_shape_height'])
+                    0, 0, shape["chosen_shape_width"], shape["chosen_shape_height"]
+                )
             case _:
-                print('out of scope in rotating_shapes build_shape_wrapper')
+                print("out of scope in rotating_shapes build_shape_wrapper")
 
     def draw_color(self, shape):
-        color = shape['chosen_shape_color']
+        color = shape["chosen_shape_color"]
         # loop_of_random_shape_color = True/False
         # loop_of_random_shape_color = shape['chosen_shape_color']
         # loop_index = shape['chosen_loop_index']
@@ -152,7 +178,7 @@ class Rotating_shapes(Mandala):
                 # if random, get_random_theme_color
                 # if incremental, get random color
                 self.theme_type = 2
-                if (self.theme_type == 1):
+                if self.theme_type == 1:
                     # random pull
                     color = get_random_theme_color(self.color_theme)
                 else:
@@ -163,13 +189,11 @@ class Rotating_shapes(Mandala):
                     # print(color)
                     pass
             case _:
-                print('out of scope in draw_color')
+                print("out of scope in draw_color")
 
         brush = QtGui.QBrush()
         # brush.setColor(QtGui.QColor('green'))
-        brush.setColor(QtGui.QColor(
-            color['r'], color['g'], color['b']
-        ))
+        brush.setColor(QtGui.QColor(color["r"], color["g"], color["b"]))
         brush.setStyle(Qt.BrushStyle.SolidPattern)
         self.painter.setBrush(brush)
         return
@@ -197,6 +221,7 @@ class Rotating_shapes(Mandala):
 
         # selected_color = get_random_theme_color(self.color_theme)
 
+
 # # depth + 1/2 shape height - 1/2 canvas height
 #                 # stroke = QPen(Qt.GlobalColor.blue)
 #                 stroke = QPen(QtGui.QColor(
@@ -210,35 +235,35 @@ class Rotating_shapes(Mandala):
 #                 shape['chosen_count'] -= 1
 #             self.number_of_replication_circles -= 1
 
-        # self.rotating_shapes_board = QGraphicsView(self.graphic_scene)
-        # self.rotating_shapes_board.setWindowTitle(
-        #     "randomDraw2 Canvas")
-        # self.rotating_shapes_board.showMaximized()
-        # self.rotating_shapes_board.show()
-        # return self.rotating_shapes_board
+# self.rotating_shapes_board = QGraphicsView(self.graphic_scene)
+# self.rotating_shapes_board.setWindowTitle(
+#     "randomDraw2 Canvas")
+# self.rotating_shapes_board.showMaximized()
+# self.rotating_shapes_board.show()
+# return self.rotating_shapes_board
 
-    # def updateTransform(self , target: QGraphicsSvgItem , newValue: Any):
+# def updateTransform(self , target: QGraphicsSvgItem , newValue: Any):
 
-    # def find_y_transformation_to_canvas_center(self, shape_depth, shape_center_y):
-    #     cp = self.canvas_center_point[1]
-    #     d = shape_depth
-    #     sh = shape_center_y
-    #     result = None
-    #     if d + sh < cp:
-    #         result = cp - (d + sh)
-    #     elif d < cp and d+sh > cp:
-    #         result = (cp - (d+sh))*-1
-    #     elif d < 0 and (d + sh) > 0:
-    #         result = cp - (d+sh)*-1
-    #     elif d < 0 and (d+sh) < 0:
-    #         result = cp - (d+sh)
-    #     else:
-    #         print('out of scope in find_y_transformation_to_canvas_center')
-    #     return result
+# def find_y_transformation_to_canvas_center(self, shape_depth, shape_center_y):
+#     cp = self.canvas_center_point[1]
+#     d = shape_depth
+#     sh = shape_center_y
+#     result = None
+#     if d + sh < cp:
+#         result = cp - (d + sh)
+#     elif d < cp and d+sh > cp:
+#         result = (cp - (d+sh))*-1
+#     elif d < 0 and (d + sh) > 0:
+#         result = cp - (d+sh)*-1
+#     elif d < 0 and (d+sh) < 0:
+#         result = cp - (d+sh)
+#     else:
+#         print('out of scope in find_y_transformation_to_canvas_center')
+#     return result
 
-    # def updateTransform(self, target: QGraphicsEllipseItem, newValue):
-    #     origin = target.transformOriginPoint()
-    #     transform = QTransform().translate(origin.x(), origin.y())
-    #     # transform.scale(newValue[0], newValue[1])
-    #     transform.translate(-origin.x(), -origin.y())
-    #     target.setTransform(transform)
+# def updateTransform(self, target: QGraphicsEllipseItem, newValue):
+#     origin = target.transformOriginPoint()
+#     transform = QTransform().translate(origin.x(), origin.y())
+#     # transform.scale(newValue[0], newValue[1])
+#     transform.translate(-origin.x(), -origin.y())
+#     target.setTransform(transform)

@@ -1,21 +1,29 @@
 from main_utility_functions import utility
 from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QGraphicsScene, QGraphicsView, QApplication, QMainWindow, QWidget, QVBoxLayout, QDialog
+from PyQt6.QtWidgets import (
+    QGraphicsScene,
+    QGraphicsView,
+    QApplication,
+    QMainWindow,
+    QWidget,
+    QVBoxLayout,
+    QDialog,
+)
 import sys
 from pprint import pprint
 
 # default variables
-DEFAULT_WIDTH = 5120
-DEFAULT_HEIGHT = 1440
+DEFAULT_WIDTH = 1440  # 5120
+DEFAULT_HEIGHT = 900  # 1440
 # COLOR_CHOICE (1=random, 2=theme)
-DEFAULT_COLOR_CHOICE = utility.get_random(2)
+DEFAULT_COLOR_CHOICE = 2  # utility.get_random(2)
 DEFAULT_RANDOM_COLOR_COUNT = utility.get_random(5, 2)
 DEFAULT_COLOR_THEME = utility.get_random_color_theme(
     DEFAULT_COLOR_CHOICE, DEFAULT_RANDOM_COLOR_COUNT
 )
 # DESIGN (1=random, 2=square, 3=rectangle, 4=scales, 5=mandala)
-DEFAULT_DESIGN = 1
+DEFAULT_DESIGN = 2
 
 # class variables
 # image_file_directory
@@ -40,7 +48,7 @@ class randomDraw2(QMainWindow):
         color_choice=DEFAULT_COLOR_CHOICE,
         color_count=DEFAULT_RANDOM_COLOR_COUNT,
         img_count=DEFAULT_IMAGE_COUNT,
-        location="~/Pictures/randomDraw2"
+        location="~/Pictures/randomDraw2",
     ):
         super().__init__()
         self.canvas_width = cwidth
@@ -49,14 +57,12 @@ class randomDraw2(QMainWindow):
         # color_choice (1=random, 2=theme)
         self.color_choice = color_choice
         # theme_type (1=random theme color, 2= cycle theme color)
-        self.theme_type = 2
+        self.theme_type = 1
         # color_count (1= full random, 2=dual, 3=tri, 4=quad, 5=cint)
         self.color_count = color_count
         self.image_file_directory = location
         self.image_count = img_count
-        self.color_theme = utility.get_random_color_theme(
-            2, 0
-        )
+        self.color_theme = utility.get_random_color_theme(2, 0)
         print(self.color_theme)
         # self.color_theme = utility.get_random_color_theme(
         #     DEFAULT_COLOR_CHOICE, DEFAULT_RANDOM_COLOR_COUNT
@@ -83,7 +89,7 @@ class randomDraw2(QMainWindow):
 
     def set_color_choice(self, choice):
         # color_choice (1=random, 2=theme)
-        print('in set_color_choice', choice)
+        print("in set_color_choice", choice)
         match (choice):
             case 1:
                 self.color_choice = 1
@@ -113,7 +119,7 @@ class randomDraw2(QMainWindow):
         self.image_file_directory = location
 
     def start(self):
-        print('started')
+        print("started")
 
         match (self.design):
             case 2:
@@ -122,7 +128,7 @@ class randomDraw2(QMainWindow):
                 #                               self.canvas_width, self.canvas_height, self.design, self.color_theme
                 #                               )
                 # mosaic_painting.show()
-                print('randomDraw Mosaic_painting')
+                print("randomDraw Mosaic_painting")
                 # pprint(vars(self.mosaic_painting))
 
                 # return self.mosaic_painting
