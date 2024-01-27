@@ -96,14 +96,38 @@ class RotatingShapesPainter(RotatingShapesBase):
                 # if (current_shape['chosen_random_loop_color']):
                 #     pass
                 self.set_blend_mode(current_loop["chosen_loop_blending_mode"])
-                self.draw_color(current_shape)
-                self.draw_shape(current_shape, current_loop["chosen_loop_radius"])
+                # self.draw_color(current_shape)
+                # self.painter.restore()
+                # self.painter.save()
+                self.draw_shape(
+                    current_shape, current_loop["chosen_loop_radius"], False
+                )
 
                 self.current_shape_rotation_angle += current_shape[
                     "chosen_shape_rotation_angle"
                 ]
                 current_shape_number -= 1
             self.painter.restore()
+            self.painter.save()
+
+            current_shape_number = len(current_loop["shape_array"]) - 1
+            while current_shape_number >= 0:
+                print("current shape number", current_shape_number)
+                current_shape = current_loop["shape_array"][current_shape_number]
+                print(current_shape["chosen_shape"])
+                # if (current_shape['chosen_random_loop_color']):
+                #     pass
+                # self.set_blend_mode(current_loop["chosen_loop_blending_mode"])
+                # self.draw_color(current_shape)
+                # self.painter.restore()
+                # self.painter.save()
+                self.draw_shape(current_shape, current_loop["chosen_loop_radius"], True)
+
+                self.current_shape_rotation_angle += current_shape[
+                    "chosen_shape_rotation_angle"
+                ]
+                current_shape_number -= 1
+
             current_loop_number -= 1
         self.painter.end()
 
@@ -117,13 +141,20 @@ class RotatingShapesPainter(RotatingShapesBase):
             case _:
                 print("out of scope in set_blend_mode")
 
-    def draw_shape(self, shape, loop_radius):
-        shape_center = shape["chosen_shape_center"]
+    def draw_shape(self, shape, loop_radius, stroke=False):
+        color = self.use_color(shape)
+        if stroke:
+            pen = QtGui.QPen()
+            pen.setWidth(5)
+            pen.setColor(QtGui.QColor("blue"))
+            self.painter.setPen(pen)
+        else:
+            brush = QtGui.QBrush()
+            brush.setColor(QtGui.QColor(color["r"], color["g"], color["b"]))
+            brush.setStyle(Qt.BrushStyle.SolidPattern)
+            self.painter.setBrush(brush)
 
-        pen = QtGui.QPen()
-        pen.setWidth(5)
-        pen.setColor(QtGui.QColor("blue"))
-        self.painter.setPen(pen)
+        shape_center = shape["chosen_shape_center"]
 
         self.painter.save()
         self.painter.rotate(self.current_shape_rotation_angle)
@@ -156,8 +187,8 @@ class RotatingShapesPainter(RotatingShapesBase):
             case _:
                 print("out of scope in rotating_shapes build_shape_wrapper")
 
-    def draw_color(self, shape):
-        color = shape["chosen_shape_color"]
+    def use_color(self, shape):
+        return_color = shape["chosen_shape_color"]
         # loop_of_random_shape_color = True/False
         # loop_of_random_shape_color = shape['chosen_shape_color']
         # loop_index = shape['chosen_loop_index']
@@ -169,7 +200,7 @@ class RotatingShapesPainter(RotatingShapesBase):
         match self.color_count:
             case 1:
                 # full random, return random color every time
-                color = get_random_rgb_color()
+                return_color = get_random_rgb_color()
 
             case 2 | 3 | 4 | 5:
                 # print('in 2,3,4,5 draw_color')
@@ -180,7 +211,7 @@ class RotatingShapesPainter(RotatingShapesBase):
                 self.theme_type = 2
                 if self.theme_type == 1:
                     # random pull
-                    color = get_random_theme_color(self.color_theme)
+                    return_color = get_random_theme_color(self.color_theme)
                 else:
                     # incremental
                     # print('loop index', loop_index)
@@ -190,13 +221,7 @@ class RotatingShapesPainter(RotatingShapesBase):
                     pass
             case _:
                 print("out of scope in draw_color")
-
-        brush = QtGui.QBrush()
-        # brush.setColor(QtGui.QColor('green'))
-        brush.setColor(QtGui.QColor(color["r"], color["g"], color["b"]))
-        brush.setStyle(Qt.BrushStyle.SolidPattern)
-        self.painter.setBrush(brush)
-        return
+        return return_color
         # if self.color_count == 1:
         #     color_dict = get_random_rgb_color()
         #     # pen = QtGui.QPen()

@@ -1,3 +1,5 @@
+# NEED TO PAINT THE FILL FIRST THEN GO BACK AND PAINT ALL OF THE STROKES AFTER
+
 from main_utility_functions.utility import (
     get_random,
     get_shape_rotation_angle,
@@ -18,6 +20,27 @@ import sys
 import random
 import math
 from pprint import pprint
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ class variables ~~~~~~~~~~~~~~~~~~~~
+# self.canvas_center_point
+# self.focus_radius
+# self.max_loop_count
+# self.min_loop_count
+# self.max_shape_count
+# self.min_shape_count
+# self.max_shape_width
+# self.min_shape_width
+# self.max_shape_height
+# self.min_shape_height
+# self.offset_max
+# self.offset_min
+# self.random_color_shapes
+# self.color_of_loops
+# self.max_stroke
+# self.min_stroke
+# self.design_loop_array
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ class variables ~~~~~~~~~~~~~~~~~~~~
+
 
 # (random, same, incremental)
 #   random loop, random shape
@@ -61,10 +84,9 @@ class RotatingShapesBase(randomDraw2):
         )
         print("^^^^^^^^^^^^^^")
         # between half of largest width and center point of height
-        self.mandala_type = "rotating_shapes"
-        self.max_loop_count = int(self.focus_radius / 250)
+        self.max_loop_count = int(self.focus_radius / 100)
         self.min_loop_count = 1
-        self.max_shape_count = self.focus_radius / 2
+        self.max_shape_count = int(self.focus_radius / 4)
         self.min_shape_count = 4
         self.max_shape_width = self.focus_radius
         self.min_shape_width = 10
@@ -118,13 +140,11 @@ class RotatingShapesBase(randomDraw2):
     def build_design(self):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # (random, same, incremental)
-        loops_design = get_design(True)
-        # loops_design = "incremental"
-        # (random, same, incremental)
-        shapes_design = get_design(False)
-        print(loops_design, shapes_design)
+        loops_design = get_design(True)  # whole loop control
+        shapes_design = get_design(False)  # shapes in the loop control
+        print(f"design types: {loops_design} {shapes_design}")
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        loop_count = get_loop_count(self.max_loop_count, self.min_loop_count)
+        loop_count = get_random(self.max_loop_count, self.min_loop_count)
         # loop_color_set (All Random, Random Random, Every Other Random, All Same, Random Theme, Incremental Theme)
         self.design_loop_array = self.build_loop(
             loop_count, loops_design, shapes_design
@@ -132,7 +152,6 @@ class RotatingShapesBase(randomDraw2):
 
     def build_loop(self, starting_loop_count, loops_design, shapes_design):
         loop_shape_array = []
-
         # self.loop_shape_pattern_type = self.get_loop_shape_pattern_type(design_loop_shape_pattern_type, loop_count)
         forced_shape = None
         if loops_design == "same" or loops_design == "incremental":
@@ -141,10 +160,8 @@ class RotatingShapesBase(randomDraw2):
         loop_count = starting_loop_count
         while loop_count > 0:
             loop_count_tuple = (starting_loop_count, loop_count)
-            chosen_shape_count = get_shape_count(
-                self.max_shape_count, self.min_shape_count
-            )
-            chosen_shape_count = 10
+            chosen_shape_count = get_random(self.max_shape_count, self.min_shape_count)
+            # chosen_shape_count = 10
 
             loop_object = {}
             loop_object["chosen_loop_radius"] = get_loop_radius(
@@ -311,34 +328,29 @@ def get_design(type):
     if type:
         # loop's criteria
         match roll:
+            case _ if roll < 66:
+                # 33% same
+                choice = design_tuple[1]
+            case _ if roll < 33:
+                # 33% incremental
+                choice = design_tuple[2]
+            case _:
+                # 33% random
+                choice = design_tuple[0]
+    else:
+        # shape criteria
+        match roll:
             case _ if roll < 98:
                 # 98% same
                 choice = design_tuple[1]
             case _ if roll < 99:
-                # 1% incremental
-                choice = design_tuple[2]
-            case _:
                 # 1% random
                 choice = design_tuple[0]
-    else:
-        match roll:
-            case _ if roll < 48:
-                # 48% same
-                choice = design_tuple[1]
-            case _ if roll < 96:
-                # 48% random
-                choice = design_tuple[0]
-                # 2% incremental
+                # 1% incremental
             case _:
                 choice = design_tuple[2]
 
     return choice
-
-
-def get_loop_count(max, min):
-    # self.max_loop_count = int(self.focus_radius/250)
-    # self.min_loop_count = 1
-    return get_random(max, min)
 
 
 def get_shape_type(
@@ -410,6 +422,7 @@ def get_color(color_theme):
 
 def get_blending_mode():
     choice = "multiply"
+    choice = False
     return choice
 
 
