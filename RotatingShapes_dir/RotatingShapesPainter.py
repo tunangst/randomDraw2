@@ -50,55 +50,36 @@ class RotatingShapesPainter(RotatingShapesBase):
         self.label.show()
 
     def start(self):
-        # circles_index = self.number_of_replication_circles - 1
-        # shape = self.shape_object_array[circles_index]
         self.current_shape_rotation_angle = 0
 
         self.painter = QPainter(self.canvas)
         self.painter.begin(self.canvas)
-        # self.painter.setRenderHints(QPainter.HighQualityAntialiasing)
-        # self.painter.setCompositionMode(QPainter.CompositionMode_Multiply)
 
         self.painter.translate(self.canvas_center_point[0], self.canvas_center_point[1])
 
-        # if self.color_of_loops != 1:
-        #     self.shape_color = self.draw_color(self.painter)
         current_loop_number = len(self.design_loop_array) - 1
-        # current_loop = self.design_loop_array[current_loop_number]['chosen_loop_blending_mode']
-        # self.set_blend_mode(current_loop)
 
         # loop over number of rings
         while current_loop_number >= 0:
             self.painter.save()
             print("current loop number", current_loop_number)
+
             current_loop = self.design_loop_array[current_loop_number]
-            # while self.number_of_replication_circles > 0:
-            # translate the canvas to middle of screen and save
-
-            # circles_index = self.number_of_replication_circles - 1
-            # shape = self.shape_object_array[circles_index]
-            # force controls
-            # shape['chosen_width'] = 200
-            # shape['chosen_height'] = 100
-            # shape['chosen_depth'] = 200
-            # shape['chosen_count'] = 20
-            # shape['chosen_angle'] = 360/shape['chosen_count']
-            # shape['chosen_random_loop_color'] =
-
-            # self.shape_center = get_shape_center_point(
-            #     shape['chosen_width'], shape['chosen_height'])
-
+            print(current_loop["shape_array"][0]["chosen_shape"])
+            print(current_loop["shape_array"][0]["chosen_shape_height"])
+            print(current_loop["chosen_loop_radius"])
+            # build shape fill
             current_shape_number = len(current_loop["shape_array"]) - 1
+            blend_mode = current_loop["chosen_loop_blending_mode"]
+            blend_mode = "screen"
+            self.set_blend_mode(blend_mode)
+            if blend_mode == "screen":
+                self.canvas.fill(QtGui.QColor("black"))
             while current_shape_number >= 0:
-                print("current shape number", current_shape_number)
                 current_shape = current_loop["shape_array"][current_shape_number]
-                print(current_shape["chosen_shape"])
-                # if (current_shape['chosen_random_loop_color']):
-                #     pass
-                self.set_blend_mode(current_loop["chosen_loop_blending_mode"])
-                # self.draw_color(current_shape)
-                # self.painter.restore()
-                # self.painter.save()
+
+                # self.set_blend_mode(current_loop["chosen_loop_blending_mode"])
+
                 self.draw_shape(
                     current_shape, current_loop["chosen_loop_radius"], False
                 )
@@ -108,19 +89,14 @@ class RotatingShapesPainter(RotatingShapesBase):
                 ]
                 current_shape_number -= 1
             self.painter.restore()
-            self.painter.save()
+            # self.painter.save()
 
+            # build shape stroke
             current_shape_number = len(current_loop["shape_array"]) - 1
+            self.set_blend_mode(False)
             while current_shape_number >= 0:
-                print("current shape number", current_shape_number)
                 current_shape = current_loop["shape_array"][current_shape_number]
-                print(current_shape["chosen_shape"])
-                # if (current_shape['chosen_random_loop_color']):
-                #     pass
-                # self.set_blend_mode(current_loop["chosen_loop_blending_mode"])
-                # self.draw_color(current_shape)
-                # self.painter.restore()
-                # self.painter.save()
+
                 self.draw_shape(current_shape, current_loop["chosen_loop_radius"], True)
 
                 self.current_shape_rotation_angle += current_shape[
@@ -138,15 +114,22 @@ class RotatingShapesPainter(RotatingShapesBase):
                 self.painter.setCompositionMode(
                     QPainter.CompositionMode.CompositionMode_Multiply
                 )
+            case "screen":
+                self.painter.setCompositionMode(
+                    QPainter.CompositionMode.CompositionMode_Screen
+                )
             case _:
+                self.painter.setCompositionMode(
+                    QPainter.CompositionMode.CompositionMode_SourceOver
+                )
                 print("out of scope in set_blend_mode")
 
     def draw_shape(self, shape, loop_radius, stroke=False):
         color = self.use_color(shape)
         if stroke:
             pen = QtGui.QPen()
-            pen.setWidth(5)
-            pen.setColor(QtGui.QColor("blue"))
+            pen.setWidth(1)
+            pen.setColor(QtGui.QColor("white"))
             self.painter.setPen(pen)
         else:
             brush = QtGui.QBrush()
@@ -203,7 +186,7 @@ class RotatingShapesPainter(RotatingShapesBase):
                 return_color = get_random_rgb_color()
 
             case 2 | 3 | 4 | 5:
-                # print('in 2,3,4,5 draw_color')
+                # print('in 2,3,4,5 use_color')
                 # not full random
                 # is theme_type random or incremental?
                 # if random, get_random_theme_color
@@ -220,7 +203,8 @@ class RotatingShapesPainter(RotatingShapesBase):
                     # print(color)
                     pass
             case _:
-                print("out of scope in draw_color")
+                pass
+                # print("out of scope in use_color")
         return return_color
         # if self.color_count == 1:
         #     color_dict = get_random_rgb_color()

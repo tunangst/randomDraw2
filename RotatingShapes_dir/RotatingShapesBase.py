@@ -72,10 +72,14 @@ class RotatingShapesBase(randomDraw2):
         super().__init__()
         print("~~~~~ in Mandala ~~~~~~~~")
         self.canvas_center_point = (self.canvas_width / 2, self.canvas_height / 2)
+        # assigning to largest width kept pushing shapes off the screen fairly consistently
+        dimension_difference = (
+            abs(self.canvas_center_point[0] - self.canvas_center_point[1]) / 2
+        )
         self.focus_radius = (
-            self.canvas_center_point[0]
+            self.canvas_center_point[0] - dimension_difference
             if self.canvas_width > self.canvas_height
-            else self.canvas_center_point[1]
+            else self.canvas_center_point[1] - dimension_difference
         )
         print(
             self.canvas_center_point,
