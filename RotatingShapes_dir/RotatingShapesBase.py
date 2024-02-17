@@ -1,10 +1,14 @@
 # NEED TO PAINT THE FILL FIRST THEN GO BACK AND PAINT ALL OF THE STROKES AFTER
+# ADD IN CONDITIONS WHERE IF FIRST AND ONGOING LOOPS HAVE RADIUS > CANVAS WIDTH TO GUARANTEE ANOTHER LOOP
+# NEED SHAPE COUNT CRITERIA FOR ITEMS IN MULTIPLY AND SCREEN, MAYBE A COLOR CHECK FOR LIGHT/DARK VALUES
+# PULL FORCED FIRST THEME OUT AND OPEN TO ALL AVAILABLE THEMES
 
 from main_utility_functions.utility import (
     get_random,
     get_shape_rotation_angle,
     get_random_theme_color,
     get_shape_center_point,
+    get_screen_corner_distance,
 )
 from randomDraw2 import randomDraw2
 from PyQt6 import QtCore, QtGui, QtWidgets, uic
@@ -73,14 +77,13 @@ class RotatingShapesBase(randomDraw2):
         print("~~~~~ in Mandala ~~~~~~~~")
         self.canvas_center_point = (self.canvas_width / 2, self.canvas_height / 2)
         # assigning to largest width kept pushing shapes off the screen fairly consistently
-        dimension_difference = (
-            abs(self.canvas_center_point[0] - self.canvas_center_point[1]) / 2
+        # dimension_difference = (
+        #     abs(self.canvas_center_point[0] - self.canvas_center_point[1]) / 2
+        # )
+        self.focus_radius = get_screen_corner_distance(
+            self.canvas_center_point[0], self.canvas_center_point[1]
         )
-        self.focus_radius = (
-            self.canvas_center_point[0] - dimension_difference
-            if self.canvas_width > self.canvas_height
-            else self.canvas_center_point[1] - dimension_difference
-        )
+
         print(
             self.canvas_center_point,
             self.canvas_center_point[0],
@@ -164,15 +167,23 @@ class RotatingShapesBase(randomDraw2):
         loop_count = starting_loop_count
         while loop_count > 0:
             loop_count_tuple = (starting_loop_count, loop_count)
-            chosen_shape_count = get_random(self.max_shape_count, self.min_shape_count)
+            chosen_shape_count = get_shape_count(
+                self.max_shape_count, self.min_shape_count
+            )
             # chosen_shape_count = 10
 
             loop_object = {}
             loop_object["chosen_loop_radius"] = get_loop_radius(
                 self.focus_radius, self.canvas_center_point[1]
             )
-            loop_object["chosen_loop_blending_mode"] = get_blending_mode()
+            loop_object[
+                "chosen_loop_blending_mode"
+            ] = True  # true will be same blending for each loop
             loop_object["chosen_shape_count"] = chosen_shape_count
+            # loop_object["chosen_rotation_angle"] = get_shape_rotation_angle(
+            #     chosen_shape_count
+            # )
+
             # loop_object['chosen_shape_type'] = self.get_chosen_loop_shape_type()
             loop_object["chosen_shape_width_offset"] = get_offset(
                 self.offset_max, self.offset_min
@@ -297,6 +308,9 @@ class RotatingShapesBase(randomDraw2):
             shape_object["chosen_shape_center"] = chosen_shape_center
             shape_object["chosen_shape_rotation_angle"] = chosen_shape_rotation_angle
             shape_object["chosen_shape_color"] = chosen_shape_color
+            shape_object[
+                "chosen_shape_blending_mode"
+            ] = "multiply"  # make random or logic based on loop switch
 
             if loop_design == "random" and shape_design == "random":
                 chosen_shape_type = get_shape_type(shape_design)
@@ -424,9 +438,11 @@ def get_color(color_theme):
     return get_random_theme_color(color_theme)
 
 
-def get_blending_mode():
+def get_blending_mode(choice=False):
     choice = "multiply"
-    choice = False
+    choicesTuple = ("multiply", "screen")
+    if not choice:
+        choice = random.choice(choicesTuple)
     return choice
 
 

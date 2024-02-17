@@ -18,8 +18,8 @@ from PyQt6.QtWidgets import (
 
 # DEFAULT VARIABLE VALUES
 DEFAULT_DESIGN_DROPDOWN_VALUE = 1
-DEFAULT_CANVAS_WIDTH = 2560
-DEFAULT_CANVAS_HEIGHT = 1440
+DEFAULT_CANVAS_WIDTH = 1440  # 2560
+DEFAULT_CANVAS_HEIGHT = 900  # 1440
 DEFAULT_COLOR_CHOICE_INDEX = 1
 DEFAULT_COLOR_COUNT_INDEX = 1
 
@@ -94,20 +94,17 @@ class Main_Form(QMainWindow):
         # COLOR_CHOICE (1=random, 2=theme)
         color_choice_dropdown.addItems(["Random", "Theme"])
         color_choice_dropdown.currentIndexChanged.connect(
-            self.color_choice_index_changed)
-        color_choice_dropdown.currentTextChanged.connect(
-            self.color_choice_text_changed)
+            self.color_choice_index_changed
+        )
+        color_choice_dropdown.currentTextChanged.connect(self.color_choice_text_changed)
 
         # WILL NEED TO BE DISABLED IF THEME IS CHOSEN
         color_count_label = QLabel("How many colors?")
         color_count_dropdown = QComboBox()
         # random_color_count (2=dual, 3=tri, 4=quad, 5=penta)
-        color_count_dropdown.addItems(
-            ["Random", "Dual", "Tri", "Quad", "Penta"])
-        color_count_dropdown.currentIndexChanged.connect(
-            self.color_count_index_changed)
-        color_count_dropdown.currentTextChanged.connect(
-            self.color_count_text_changed)
+        color_count_dropdown.addItems(["Random", "Dual", "Tri", "Quad", "Penta"])
+        color_count_dropdown.currentIndexChanged.connect(self.color_count_index_changed)
+        color_count_dropdown.currentTextChanged.connect(self.color_count_text_changed)
 
         self.main_container_layout.addWidget(draw_button)
 
@@ -135,8 +132,7 @@ class Main_Form(QMainWindow):
         self.controls_widget.setLayout(self.main_container_layout)
         self.setCentralWidget(self.controls_widget)
         # Keep this controls window on top
-        self.setWindowFlags(self.windowFlags() ^
-                            Qt.WindowType.WindowStaysOnTopHint)
+        self.setWindowFlags(self.windowFlags() ^ Qt.WindowType.WindowStaysOnTopHint)
 
     def closeEvent(self, e):
         sys.exit(0)

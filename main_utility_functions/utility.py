@@ -1,4 +1,5 @@
 import random
+import math
 from contextlib import redirect_stdout
 
 
@@ -52,10 +53,13 @@ def get_random_color_theme(color_choice, color_count):
         case 2:
             # import themes array
             from .Themes.themes import themes_array
-            print('in get_random_color_theme, theme choice case 2')
+
+            print("in get_random_color_theme, theme choice case 2")
             # print('in get_random_color_theme choice =1')
             # choose array from master
-            print('in utility get_random_color_theme, forcing color theme: remove later')
+            print(
+                "in utility get_random_color_theme, forcing color theme: remove later"
+            )
             chosen_theme = themes_array[0]
             # chosen_theme = themes_array[get_random(len(themes_array))]
             return chosen_theme
@@ -108,7 +112,7 @@ def get_closest_box_count(width, count):
 
 
 def get_shape_center_point(shape_width, shape_height):
-    center_of_shape = (shape_width/2, shape_height/2)
+    center_of_shape = (shape_width / 2, shape_height / 2)
     return center_of_shape
 
 
@@ -116,17 +120,24 @@ def get_shape_center_rotation_point(shape_depth, canvas_center_point):
     # will be centered on x-axis
     canvas_center_width = 0
     canvas_center_height = canvas_center_point[1]
-    center_of_canvas_height_relative_to_shape_center = canvas_center_height - \
-        shape_depth
-    center_point = (canvas_center_width,
-                    center_of_canvas_height_relative_to_shape_center)
+    center_of_canvas_height_relative_to_shape_center = (
+        canvas_center_height - shape_depth
+    )
+    center_point = (
+        canvas_center_width,
+        center_of_canvas_height_relative_to_shape_center,
+    )
     # print(center_point)
     return center_point
 
 
 def get_shape_rotation_angle(shape_quantity):
-    angle = 360/shape_quantity
+    angle = 360 / shape_quantity
     return angle
+
+
+def get_screen_corner_distance(cWidth, cHeight):
+    return math.sqrt(cWidth**2 + cHeight**2)
 
 
 def test():
@@ -136,13 +147,12 @@ def test():
     for theme in themes_array:
         new_color_theme_array_of_objects = []
         for color in theme:
-
             # print(color)
             color_string_split = color.split(", ")
             # print(color_string_split)
             r = int(color_string_split[0][4:])
             g = int(color_string_split[1])
-            b = int(color_string_split[2][0: len(color_string_split[2]) - 1])
+            b = int(color_string_split[2][0 : len(color_string_split[2]) - 1])
             # print('r g b ', r, ' ', g, ' ', b)
             new_color_theme_array_of_objects.append({"r": r, "g": g, "b": b})
             # print(new_color_theme_array_of_objects)

@@ -17,7 +17,7 @@ from pprint import pprint
 DEFAULT_WIDTH = 1440  # 5120
 DEFAULT_HEIGHT = 900  # 1440
 # COLOR_CHOICE (1=random, 2=theme)
-DEFAULT_COLOR_CHOICE = 2  # utility.get_random(2)
+DEFAULT_COLOR_CHOICE = 1  # utility.get_random(2)
 DEFAULT_RANDOM_COLOR_COUNT = utility.get_random(5, 2)
 DEFAULT_COLOR_THEME = utility.get_random_color_theme(
     DEFAULT_COLOR_CHOICE, DEFAULT_RANDOM_COLOR_COUNT
