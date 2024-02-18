@@ -11,13 +11,14 @@ from PyQt6.QtWidgets import (
     QDialog,
 )
 import sys
+import random
 from pprint import pprint
 
 # default variables
 DEFAULT_WIDTH = 1440  # 5120
 DEFAULT_HEIGHT = 900  # 1440
 # COLOR_CHOICE (1=random, 2=theme)
-DEFAULT_COLOR_CHOICE = 1  # utility.get_random(2)
+DEFAULT_COLOR_CHOICE = utility.get_random(2)
 DEFAULT_RANDOM_COLOR_COUNT = utility.get_random(5, 2)
 DEFAULT_COLOR_THEME = utility.get_random_color_theme(
     DEFAULT_COLOR_CHOICE, DEFAULT_RANDOM_COLOR_COUNT
@@ -51,6 +52,15 @@ class randomDraw2(QMainWindow):
         location="~/Pictures/randomDraw2",
     ):
         super().__init__()
+        print(random.randint(1, 2))
+        print(
+            (
+                "random color choice"
+                if DEFAULT_COLOR_CHOICE == 1
+                else "theme color choice"
+            ),
+            DEFAULT_COLOR_CHOICE,
+        )
         self.canvas_width = cwidth
         self.canvas_height = cheight
         self.design = design

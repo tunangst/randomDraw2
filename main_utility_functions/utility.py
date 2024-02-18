@@ -60,8 +60,8 @@ def get_random_color_theme(color_choice, color_count):
             print(
                 "in utility get_random_color_theme, forcing color theme: remove later"
             )
-            chosen_theme = themes_array[0]
-            # chosen_theme = themes_array[get_random(len(themes_array))]
+            # chosen_theme = themes_array[0]
+            chosen_theme = themes_array[get_random(len(themes_array))]
             return chosen_theme
         case _:
             print("Out of scope")
